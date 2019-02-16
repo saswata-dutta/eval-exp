@@ -467,4 +467,36 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     exp.eval(Map("str" -> "Hey", "num" -> 1.2)) shouldEqual true
   }
 
+  it should "work for if condition" in {
+    val json =
+      """
+        |{
+        |    "cond": {
+        |        "lhs": {
+        |            "type": "STR_LITERAL",
+        |            "value": "Hi"
+        |        },
+        |        "rhs": {
+        |            "key": "str",
+        |            "type": "STR_SYMBOL"
+        |        },
+        |        "type": "STR_EQUALS"
+        |    },
+        |    "lhs": {
+        |        "type": "NUM_LITERAL",
+        |        "value": 1.1
+        |    },
+        |    "rhs": {
+        |        "key": "num",
+        |        "type": "NUM_SYMBOL"
+        |    },
+        |    "type": "IF"
+        |}
+      """.stripMargin
+
+    val exp = JsonParser.parseNumExp(json)
+    exp.eval(Map("str" -> "Hi", "num" -> 10.1)) shouldEqual 1.1
+    exp.eval(Map("str" -> "Ho", "num" -> 10.1)) shouldEqual 10.1
+  }
+
 }
