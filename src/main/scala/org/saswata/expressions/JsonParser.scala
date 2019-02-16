@@ -13,6 +13,7 @@ object JsonParser {
   //    "type": "???",
   //    "key": "???",
   //    "value": "???" / ???,
+  //    "cond": "???",
   //    "lhs": {},
   //    "rhs": {}
   //  }
@@ -39,6 +40,8 @@ object JsonParser {
   def extractLhs(json: JObject): JObject = (json \ "lhs").asInstanceOf[JObject]
 
   def extractRhs(json: JObject): JObject = (json \ "rhs").asInstanceOf[JObject]
+
+  def extractCond(json: JObject): JObject = (json \ "cond").asInstanceOf[JObject]
 
   def parseBoolExp(jsonStr: String): Exp[Boolean] = {
     parseBoolExp(parseJsonObj(jsonStr))
@@ -107,6 +110,7 @@ object JsonParser {
     extractType(json) match {
       case tag if num_atom.contains(tag) => parseNumAtom(json, tag)
       case tag if binary_num_ops.contains(tag) => parseBinNumOperator(json, tag)
+      case "IF" => parseIfCondition(json)
     }
   }
 
@@ -134,6 +138,13 @@ object JsonParser {
       case "MULTIPLY" => MULTIPLY(parseNumExp(lhs), parseNumExp(rhs))
       case "DIVIDE" => DIVIDE(parseNumExp(lhs), parseNumExp(rhs))
     }
+  }
+
+  def parseIfCondition(json: JObject): Exp[Double] = {
+    val lhs = extractLhs(json)
+    val rhs = extractRhs(json)
+    val cond = extractCond(json)
+    IF(parseBoolExp(cond), parseNumExp(lhs), parseNumExp(rhs))
   }
 
 }
