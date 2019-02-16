@@ -351,4 +351,30 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual true
   }
 
+  it should "work for string symbol" in {
+    val json =
+      """
+        |{
+        |	"type": "STR_SYMBOL",
+        |	"key": "x"
+        |}
+      """.stripMargin
+
+    val exp = JsonParser.parseStrAtom(JsonParser.parseJsonObj(json))
+    exp.eval(Map("x" -> "HELLO")) shouldEqual "HELLO"
+  }
+
+  it should "work for num symbol" in {
+    val json =
+      """
+        |{
+        |	"type": "NUM_SYMBOL",
+        |	"key": "x"
+        |}
+      """.stripMargin
+
+    val exp = JsonParser.parseNumExp(json)
+    exp.eval(Map("x" -> 6.5)) shouldEqual 6.5
+  }
+
 }
