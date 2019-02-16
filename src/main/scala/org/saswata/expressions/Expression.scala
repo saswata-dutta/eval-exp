@@ -31,6 +31,14 @@ object Expression {
     override def eval(env: Map[String, Any]): String = value
   }
 
+  case class STR_EQUALS(lhs: Exp[String], rhs: Exp[String]) extends Exp[Boolean] {
+    override def eval(env: Map[String, Any]): Boolean = lhs.eval(env) == rhs.eval(env)
+  }
+
+  case class STR_NOT_EQUALS(lhs: Exp[String], rhs: Exp[String]) extends Exp[Boolean] {
+    override def eval(env: Map[String, Any]): Boolean = lhs.eval(env) != rhs.eval(env)
+  }
+
   case class EQUALS(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
     override def eval(env: Map[String, Any]): Boolean = lhs.eval(env) == rhs.eval(env)
   }
@@ -63,8 +71,8 @@ object Expression {
     override def eval(env: Map[String, Any]): Boolean = lhs.eval(env) || rhs.eval(env)
   }
 
-  case class NOT(lhs: Exp[Boolean]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = !lhs.eval(env)
+  case class NOT(rhs: Exp[Boolean]) extends Exp[Boolean] {
+    override def eval(env: Map[String, Any]): Boolean = !rhs.eval(env)
   }
 
   case class ADD(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Double] {
