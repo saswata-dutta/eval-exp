@@ -112,7 +112,15 @@ object JsonParser {
 
   def parseNumAtom(json: JObject, typeTag: String): Exp[Double] = {
     typeTag match {
-      case "NUM_LITERAL" => NUM_LITERAL(extractValue(json).asInstanceOf[JDouble].values)
+      case "NUM_LITERAL" =>
+        val value: Double = extractValue(json) match {
+          case JInt(num) => num.toDouble
+          case JLong(num) => num.toDouble
+          case JDouble(num) => num
+          case JDecimal(num) => num.toDouble
+        }
+        NUM_LITERAL(value)
+
       case "NUM_SYMBOL" => NUM_SYMBOL(extractKey(json))
     }
   }
