@@ -40,27 +40,27 @@ object Expression {
   }
 
   case class EQUALS(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = lhs.eval(env) == rhs.eval(env)
+    override def eval(env: Map[String, Any]): Boolean = round(lhs.eval(env)) == round(rhs.eval(env))
   }
 
   case class NOT_EQUALS(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = lhs.eval(env) != rhs.eval(env)
+    override def eval(env: Map[String, Any]): Boolean = round(lhs.eval(env)) != round(rhs.eval(env))
   }
 
   case class LESSER_THAN(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = lhs.eval(env) < rhs.eval(env)
+    override def eval(env: Map[String, Any]): Boolean = round(lhs.eval(env)) < round(rhs.eval(env))
   }
 
   case class LESSER_THAN_EQ(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = lhs.eval(env) <= rhs.eval(env)
+    override def eval(env: Map[String, Any]): Boolean = round(lhs.eval(env)) <= round(rhs.eval(env))
   }
 
   case class GREATER_THAN(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = lhs.eval(env) > rhs.eval(env)
+    override def eval(env: Map[String, Any]): Boolean = round(lhs.eval(env)) > round(rhs.eval(env))
   }
 
   case class GREATER_THAN_EQ(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = lhs.eval(env) >= rhs.eval(env)
+    override def eval(env: Map[String, Any]): Boolean = round(lhs.eval(env)) >= round(rhs.eval(env))
   }
 
   case class AND(lhs: Exp[Boolean], rhs: Exp[Boolean]) extends Exp[Boolean] {
