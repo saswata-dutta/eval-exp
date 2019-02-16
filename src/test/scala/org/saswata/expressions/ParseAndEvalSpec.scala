@@ -308,4 +308,47 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     val result = Expression.eval[Boolean](exp, Map.empty[String, Any])
     result shouldEqual true
   }
+
+  it should "work for string equals" in {
+    val json =
+      """
+        |{
+        |    "type": "STR_EQUALS",
+        |    "lhs": {
+        |        "type": "STR_LITERAL",
+        |        "value": "Hi"
+        |    },
+        |    "rhs": {
+        |        "type": "STR_LITERAL",
+        |        "value": "Hi"
+        |    }
+        |}
+      """.stripMargin
+
+    val exp = JsonParser.parseBoolExp(json)
+    val result = Expression.eval[Boolean](exp, Map.empty[String, Any])
+    result shouldEqual true
+  }
+
+  it should "work for string not equals" in {
+    val json =
+      """
+        |{
+        |    "type": "STR_NOT_EQUALS",
+        |    "lhs": {
+        |        "type": "STR_LITERAL",
+        |        "value": "Hi"
+        |    },
+        |    "rhs": {
+        |        "type": "STR_LITERAL",
+        |        "value": "Ho"
+        |    }
+        |}
+      """.stripMargin
+
+    val exp = JsonParser.parseBoolExp(json)
+    val result = Expression.eval[Boolean](exp, Map.empty[String, Any])
+    result shouldEqual true
+  }
+
 }

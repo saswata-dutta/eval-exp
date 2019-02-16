@@ -16,6 +16,10 @@ object Expression {
     override def eval(env: Map[String, Any]): String = env.get(key).map(_.asInstanceOf[String]).getOrElse("")
   }
 
+  case class STR_LITERAL(value: String) extends Exp[String] {
+    override def eval(env: Map[String, Any]): String = value
+  }
+
   case class NUM_SYMBOL(key: String) extends Exp[Double] {
     override def eval(env: Map[String, Any]): Double = round(env.get(key).map(_.asInstanceOf[Double]).getOrElse(0.0))
   }
@@ -25,10 +29,6 @@ object Expression {
     private val rounded: Double = round(value)
 
     override def eval(env: Map[String, Any]): Double = rounded
-  }
-
-  case class STR_LITERAL(value: String) extends Exp[String] {
-    override def eval(env: Map[String, Any]): String = value
   }
 
   case class STR_EQUALS(lhs: Exp[String], rhs: Exp[String]) extends Exp[Boolean] {
