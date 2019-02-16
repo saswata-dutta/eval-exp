@@ -377,4 +377,94 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     exp.eval(Map("x" -> 6.5)) shouldEqual 6.5
   }
 
+  it should "work for and operation" in {
+    val json =
+      """
+        |{
+        |    "lhs": {
+        |        "lhs": {
+        |            "type": "NUM_LITERAL",
+        |            "value": 1.1
+        |        },
+        |        "rhs": {
+        |            "key": "num",
+        |            "type": "NUM_SYMBOL"
+        |        },
+        |        "type": "EQUALS"
+        |    },
+        |    "rhs": {
+        |        "lhs": {
+        |            "type": "STR_LITERAL",
+        |            "value": "Hi"
+        |        },
+        |        "rhs": {
+        |            "key": "str",
+        |            "type": "STR_SYMBOL"
+        |        },
+        |        "type": "STR_EQUALS"
+        |    },
+        |    "type": "AND"
+        |}
+      """.stripMargin
+
+    val exp = JsonParser.parseBoolExp(json)
+    exp.eval(Map("str" -> "Hi", "num" -> 1.1)) shouldEqual true
+  }
+
+  it should "work for or operation" in {
+    val json =
+      """
+        |{
+        |    "lhs": {
+        |        "lhs": {
+        |            "type": "NUM_LITERAL",
+        |            "value": 1.1
+        |        },
+        |        "rhs": {
+        |            "key": "num",
+        |            "type": "NUM_SYMBOL"
+        |        },
+        |        "type": "EQUALS"
+        |    },
+        |    "rhs": {
+        |        "lhs": {
+        |            "type": "STR_LITERAL",
+        |            "value": "Hi"
+        |        },
+        |        "rhs": {
+        |            "key": "str",
+        |            "type": "STR_SYMBOL"
+        |        },
+        |        "type": "STR_EQUALS"
+        |    },
+        |    "type": "OR"
+        |}
+      """.stripMargin
+
+    val exp = JsonParser.parseBoolExp(json)
+    exp.eval(Map("str" -> "Hi", "num" -> 1.2)) shouldEqual true
+  }
+
+  it should "work for not operation" in {
+    val json =
+      """{
+        |    "rhs": {
+        |        "lhs": {
+        |            "type": "STR_LITERAL",
+        |            "value": "Hi"
+        |        },
+        |        "rhs": {
+        |            "key": "str",
+        |            "type": "STR_SYMBOL"
+        |        },
+        |        "type": "STR_EQUALS"
+        |    },
+        |    "type": "NOT"
+        |}
+      """.stripMargin
+
+    val exp = JsonParser.parseBoolExp(json)
+    exp.eval(Map("str" -> "Hey", "num" -> 1.2)) shouldEqual true
+  }
+
 }
