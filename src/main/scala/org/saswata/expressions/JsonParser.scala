@@ -27,8 +27,9 @@ object JsonParser {
 
   private val binary_num_ops: Seq[String] = Seq("ADD", "SUBTRACT", "MULTIPLY", "DIVIDE")
 
-  private val str_atom: Seq[String] = Seq("STR_SYMBOL", "STR_LITERAL")
-  private val num_atom: Seq[String] = Seq("NUM_SYMBOL", "NUM_LITERAL")
+  private val str_atoms: Seq[String] = Seq("STR_SYMBOL", "STR_LITERAL")
+  private val num_atoms: Seq[String] = Seq("NUM_SYMBOL", "NUM_LITERAL")
+  private val bool_atoms: Seq[String] = Seq("BOOL_SYMBOL")
 
   def parseJsonObj(jsonStr: String): JObject = parse(jsonStr).asInstanceOf[JObject]
 
@@ -50,10 +51,17 @@ object JsonParser {
 
   def parseBoolExp(json: JObject): Exp[Boolean] = {
     extractType(json) match {
+      case tag if bool_atoms.contains(tag) => parseBoolAtom(json, tag)
       case tag if unary_bool_ops.contains(tag) => parseUniBoolOperator(json, tag)
       case tag if binary_bool_ops.contains(tag) => parseBinBoolOperator(json, tag)
       case tag if binary_str_bool_ops.contains(tag) => parseBinStrBoolOperator(json, tag)
       case tag if binary_num_bool_ops.contains(tag) => parseBinNumBoolOperator(json, tag)
+    }
+  }
+
+  def parseBoolAtom(json: JObject, typeTag: String): Exp[Boolean] = {
+    typeTag match {
+      case "BOOL_SYMBOL" => BOOL_SYMBOL(extractKey(json))
     }
   }
 
@@ -96,7 +104,7 @@ object JsonParser {
 
   def parseStrAtom(json: JObject): Exp[String] = {
     extractType(json) match {
-      case tag if str_atom.contains(tag) => tag match {
+      case tag if str_atoms.contains(tag) => tag match {
         case "STR_LITERAL" => STR_LITERAL(extractValue(json).asInstanceOf[JString].values)
         case "STR_SYMBOL" => STR_SYMBOL(extractKey(json))
       }
@@ -109,7 +117,7 @@ object JsonParser {
 
   def parseNumExp(json: JObject): Exp[Double] = {
     extractType(json) match {
-      case tag if num_atom.contains(tag) => parseNumAtom(json, tag)
+      case tag if num_atoms.contains(tag) => parseNumAtom(json, tag)
       case tag if binary_num_ops.contains(tag) => parseBinNumOperator(json, tag)
       case "IF" => parseIfCondition(json)
     }

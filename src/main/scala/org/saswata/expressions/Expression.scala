@@ -8,6 +8,11 @@ object Expression {
     def eval(env: Map[String, Any]): R
   }
 
+  case class BOOL_SYMBOL(key: String) extends Exp[Boolean] {
+    override def eval(env: Map[String, Any]): Boolean =
+      env.get(key).map(_.asInstanceOf[Boolean]).getOrElse(false)
+  }
+
   case class STR_SYMBOL(key: String) extends Exp[String] {
     override def eval(env: Map[String, Any]): String = env.get(key).map(_.asInstanceOf[String]).getOrElse("")
   }
@@ -111,10 +116,10 @@ object Expression {
   }
 
   // helper methods for class
-  def convertValues(v: Any): Any = v match {
-    case n: java.lang.Number =>
-      n.doubleValue()
-    case any => any.toString
+  def captureEnvValues(v: Any): Any = v match {
+    case b: Boolean => b
+    case n: java.lang.Number => n.doubleValue()
+    case s: String => s
   }
 
   def jmap2map(jmap: java.util.Map[java.lang.String, java.lang.Object]): Map[String, Any] = {
@@ -123,7 +128,7 @@ object Expression {
   }
 
   def sanitiseValues(env: Map[String, Any]): Map[String, Any] = {
-    env.mapValues(convertValues)
+    env.mapValues(captureEnvValues)
   }
 }
 

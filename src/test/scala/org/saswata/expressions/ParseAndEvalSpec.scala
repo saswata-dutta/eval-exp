@@ -5,7 +5,7 @@ import org.scalatest._
 
 class ParseAndEvalSpec extends FlatSpec with Matchers {
 
-  "The Parser and Evaluator" should "work for atomic ints" in {
+  "The Parser and Evaluator" should "handle atomic ints" in {
     val json =
       """
         |{
@@ -19,7 +19,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual 1.0
   }
 
-  it should "work for atomic decimals with 1 significant digit" in {
+  it should "handle atomic decimals with 1 significant digit" in {
     val json =
       """
         |{
@@ -33,7 +33,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual 100.1
   }
 
-  it should "work for atomic decimals with 2 significant digits" in {
+  it should "handle atomic decimals with 2 significant digits" in {
     val json =
       """
         |{
@@ -47,7 +47,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual 100.12
   }
 
-  it should "lookup numeric symbols" in {
+  it should "handle numeric symbols" in {
     val json =
       """
         |{
@@ -66,7 +66,23 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     new Expression(Map("num" -> BigInt(100))).eval[Double](exp) shouldEqual 100.0
   }
 
-  it should "work for numeric add" in {
+  it should "handle bool symbols" in {
+    val json =
+      """
+        |{
+        |	"type": "BOOL_SYMBOL",
+        |	"key": "flag"
+        |}
+      """.stripMargin
+
+    val exp = JsonParser.parseBoolExp(json)
+    new Expression().eval[Boolean](exp) shouldEqual false
+    new Expression(Map("num" -> 1)).eval[Boolean](exp) shouldEqual false
+    new Expression(Map("flag" -> false)).eval[Boolean](exp) shouldEqual false
+    new Expression(Map("flag" -> true)).eval[Boolean](exp) shouldEqual true
+  }
+
+  it should "handle numeric add" in {
     val json =
       """
         |{
@@ -88,7 +104,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual 2.1
   }
 
-  it should "work for numeric subtract" in {
+  it should "handle numeric subtract" in {
     val json =
       """
         |{
@@ -109,7 +125,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual 0.25
   }
 
-  it should "work for numeric multiply" in {
+  it should "handle numeric multiply" in {
     val json =
       """
         |{
@@ -130,7 +146,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual 2.5
   }
 
-  it should "work for numeric divide" in {
+  it should "handle numeric divide" in {
     val json =
       """
         |{
@@ -151,7 +167,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual (5.5 / 1.25)
   }
 
-  it should "work for numeric equals" in {
+  it should "handle numeric equals" in {
     val json =
       """
         |{
@@ -172,7 +188,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual true
   }
 
-  it should "work for numeric not equals" in {
+  it should "handle numeric not equals" in {
     val json =
       """
         |{
@@ -193,7 +209,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual true
   }
 
-  it should "work for numeric lesser equals for equal" in {
+  it should "handle numeric lesser equals for equal" in {
     val json =
       """
         |{
@@ -214,7 +230,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual true
   }
 
-  it should "work for numeric lesser equals" in {
+  it should "handle numeric lesser equals" in {
     val json =
       """
         |{
@@ -235,7 +251,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual true
   }
 
-  it should "work for numeric lesser" in {
+  it should "handle numeric lesser" in {
     val json =
       """
         |{
@@ -256,7 +272,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual true
   }
 
-  it should "work for numeric greater equals for equals" in {
+  it should "handle numeric greater equals for equals" in {
     val json =
       """
         |{
@@ -277,7 +293,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual true
   }
 
-  it should "work for numeric greater equals" in {
+  it should "handle numeric greater equals" in {
     val json =
       """
         |{
@@ -298,7 +314,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual true
   }
 
-  it should "work for numeric greater" in {
+  it should "handle numeric greater" in {
     val json =
       """
         |{
@@ -319,7 +335,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual true
   }
 
-  it should "work for atomic strings" in {
+  it should "handle atomic strings" in {
     val json =
       """
         |{
@@ -333,7 +349,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual "HELLO"
   }
 
-  it should "work for string equals" in {
+  it should "handle string equals" in {
     val json =
       """
         |{
@@ -354,7 +370,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual true
   }
 
-  it should "work for string not equals" in {
+  it should "handle string not equals" in {
     val json =
       """
         |{
@@ -375,7 +391,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual true
   }
 
-  it should "work for string symbol" in {
+  it should "handle string symbol" in {
     val json =
       """
         |{
@@ -389,7 +405,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual "HELLO"
   }
 
-  it should "work for num symbol" in {
+  it should "handle num symbol" in {
     val json =
       """
         |{
@@ -403,7 +419,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual 6.5
   }
 
-  it should "work for and operation" in {
+  it should "handle and operation" in {
     val json =
       """
         |{
@@ -438,7 +454,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual true
   }
 
-  it should "work for or operation" in {
+  it should "handle or operation" in {
     val json =
       """
         |{
@@ -473,7 +489,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual true
   }
 
-  it should "work for not operation" in {
+  it should "handle not operation" in {
     val json =
       """{
         |    "rhs": {
@@ -496,7 +512,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result shouldEqual true
   }
 
-  it should "work for if condition" in {
+  it should "handle if condition using bool op" in {
     val json =
       """
         |{
@@ -532,7 +548,34 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result2 shouldEqual 10.1
   }
 
-  it should "work for explicit expression class constructors" in {
+  it should "handle if condition using bool symbol" in {
+    val json =
+      """
+        |{
+        |    "cond": {
+        |        "key": "flag",
+        |        "type": "BOOL_SYMBOL"
+        |    },
+        |    "lhs": {
+        |        "type": "NUM_LITERAL",
+        |        "value": 10
+        |    },
+        |    "rhs": {
+        |        "type": "NUM_LITERAL",
+        |        "value": 15
+        |    },
+        |    "type": "IF"
+        |}
+      """.stripMargin
+
+    val exp = JsonParser.parseNumExp(json)
+
+    new Expression().eval[Double](exp) shouldEqual 15.0
+    new Expression(Map("flag" -> false)).eval[Double](exp) shouldEqual 15.0
+    new Expression(Map("flag" -> true)).eval[Double](exp) shouldEqual 10.0
+  }
+
+  it should "handle explicit expression class constructors" in {
     val json =
       """
         |{
