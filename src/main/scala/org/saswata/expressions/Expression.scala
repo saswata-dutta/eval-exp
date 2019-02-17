@@ -4,10 +4,6 @@ import org.saswata.expressions.Expression.{Exp, jmap2map, sanitiseValues}
 
 object Expression {
 
-  private val NUM_SCALE: Double = 100.0
-
-  private def round(value: Double): Double = math.round(value * NUM_SCALE) / NUM_SCALE
-
   sealed trait Exp[R] {
     def eval(env: Map[String, Any]): R
   }
@@ -21,14 +17,11 @@ object Expression {
   }
 
   case class NUM_SYMBOL(key: String) extends Exp[Double] {
-    override def eval(env: Map[String, Any]): Double = round(env.get(key).map(_.asInstanceOf[Double]).getOrElse(0.0))
+    override def eval(env: Map[String, Any]): Double = env.get(key).map(_.asInstanceOf[Double]).getOrElse(0.0)
   }
 
   case class NUM_LITERAL(value: Double) extends Exp[Double] {
-
-    private val rounded: Double = round(value)
-
-    override def eval(env: Map[String, Any]): Double = rounded
+    override def eval(env: Map[String, Any]): Double = value
   }
 
   case class STR_EQUALS(lhs: Exp[String], rhs: Exp[String]) extends Exp[Boolean] {
@@ -39,28 +32,48 @@ object Expression {
     override def eval(env: Map[String, Any]): Boolean = lhs.eval(env) != rhs.eval(env)
   }
 
+  def fuzzyEquals(lhs: Double, rhs: Double): Boolean = {
+    lhs.compare(rhs) == 0 || math.abs(lhs - rhs) < 0.001
+  }
+
   case class EQUALS(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = round(lhs.eval(env)) == round(rhs.eval(env))
+    override def eval(env: Map[String, Any]): Boolean = fuzzyEquals(lhs.eval(env), rhs.eval(env))
   }
 
   case class NOT_EQUALS(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = round(lhs.eval(env)) != round(rhs.eval(env))
+    override def eval(env: Map[String, Any]): Boolean = !fuzzyEquals(lhs.eval(env), rhs.eval(env))
   }
 
   case class LESSER_THAN(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = round(lhs.eval(env)) < round(rhs.eval(env))
+    override def eval(env: Map[String, Any]): Boolean = {
+      val lhsAns = lhs.eval(env)
+      val rhsAns = rhs.eval(env)
+      !fuzzyEquals(lhsAns, rhsAns) && lhsAns < rhsAns
+    }
   }
 
   case class LESSER_THAN_EQ(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = round(lhs.eval(env)) <= round(rhs.eval(env))
+    override def eval(env: Map[String, Any]): Boolean = {
+      val lhsAns = lhs.eval(env)
+      val rhsAns = rhs.eval(env)
+      fuzzyEquals(lhsAns, rhsAns) || lhsAns <= rhsAns
+    }
   }
 
   case class GREATER_THAN(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = round(lhs.eval(env)) > round(rhs.eval(env))
+    override def eval(env: Map[String, Any]): Boolean = {
+      val lhsAns = lhs.eval(env)
+      val rhsAns = rhs.eval(env)
+      !fuzzyEquals(lhsAns, rhsAns) && lhsAns > rhsAns
+    }
   }
 
   case class GREATER_THAN_EQ(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = round(lhs.eval(env)) >= round(rhs.eval(env))
+    override def eval(env: Map[String, Any]): Boolean = {
+      val lhsAns = lhs.eval(env)
+      val rhsAns = rhs.eval(env)
+      fuzzyEquals(lhsAns, rhsAns) || lhsAns > rhsAns
+    }
   }
 
   case class AND(lhs: Exp[Boolean], rhs: Exp[Boolean]) extends Exp[Boolean] {
