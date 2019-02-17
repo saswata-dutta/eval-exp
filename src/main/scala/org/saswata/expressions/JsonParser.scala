@@ -12,10 +12,10 @@ object JsonParser {
   //  {
   //    "type": "???",
   //    "key": "???",
-  //    "value": "???" / ???,
-  //    "cond": "???",
-  //    "lhs": {},
-  //    "rhs": {}
+  //    "value": "???",
+  //    "cond": {???},
+  //    "lhs": {???},
+  //    "rhs": {???}
   //  }
 
   private val binary_str_bool_ops: Seq[String] = Seq("STR_EQUALS", "STR_NOT_EQUALS")

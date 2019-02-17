@@ -14,7 +14,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseNumExp(json)
-    Expression.eval[Double](exp, Map.empty[String, Any]) shouldEqual 1.0
+    val result: Double = Expression().eval[Double](exp)
+    result shouldEqual 1.0
   }
 
   it should "work for atomic decimals with 1 significant digit" in {
@@ -27,7 +28,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseNumExp(json)
-    Expression.eval[Double](exp, Map.empty[String, Any]) shouldEqual 100.1
+    val result: Double = Expression().eval[Double](exp)
+    result shouldEqual 100.1
   }
 
   it should "work for atomic decimals with 2 significant digits" in {
@@ -40,7 +42,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseNumExp(json)
-    Expression.eval[Double](exp, Map.empty[String, Any]) shouldEqual 100.12
+    val result: Double = Expression().eval[Double](exp)
+    result shouldEqual 100.12
   }
 
   it should "work for atomic strings" in {
@@ -53,7 +56,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseStrAtom(JsonParser.parseJsonObj(json))
-    exp.eval(Map.empty[String, Any]) shouldEqual "HELLO"
+    val result: String = Expression().eval[String](exp)
+    result shouldEqual "HELLO"
   }
 
   it should "work for numeric add" in {
@@ -74,7 +78,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
 
 
     val exp = JsonParser.parseNumExp(json)
-    val result = Expression.eval[Double](exp, Map.empty[String, Any])
+    val result: Double = Expression().eval[Double](exp)
     result shouldEqual 2.1
   }
 
@@ -95,7 +99,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseNumExp(json)
-    val result = Expression.eval[Double](exp, Map.empty[String, Any])
+    val result: Double = Expression().eval[Double](exp)
     result shouldEqual 0.25
   }
 
@@ -116,7 +120,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseNumExp(json)
-    val result = Expression.eval[Double](exp, Map.empty[String, Any])
+    val result: Double = Expression().eval[Double](exp)
     result shouldEqual 2.5
   }
 
@@ -137,7 +141,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseNumExp(json)
-    val result = Expression.eval[Double](exp, Map.empty[String, Any])
+    val result: Double = Expression().eval[Double](exp)
     result shouldEqual (5.5 / 1.25)
   }
 
@@ -158,7 +162,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseBoolExp(json)
-    val result = Expression.eval[Boolean](exp, Map.empty[String, Any])
+    val result: Boolean = Expression().eval[Boolean](exp)
     result shouldEqual true
   }
 
@@ -179,7 +183,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseBoolExp(json)
-    val result = Expression.eval[Boolean](exp, Map.empty[String, Any])
+    val result: Boolean = Expression().eval[Boolean](exp)
     result shouldEqual true
   }
 
@@ -200,7 +204,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseBoolExp(json)
-    val result = Expression.eval[Boolean](exp, Map.empty[String, Any])
+    val result: Boolean = Expression().eval[Boolean](exp)
     result shouldEqual true
   }
 
@@ -221,7 +225,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseBoolExp(json)
-    val result = Expression.eval[Boolean](exp, Map.empty[String, Any])
+    val result: Boolean = Expression().eval[Boolean](exp)
     result shouldEqual true
   }
 
@@ -242,7 +246,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseBoolExp(json)
-    val result = Expression.eval[Boolean](exp, Map.empty[String, Any])
+    val result: Boolean = Expression().eval[Boolean](exp)
     result shouldEqual true
   }
 
@@ -263,7 +267,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseBoolExp(json)
-    val result = Expression.eval[Boolean](exp, Map.empty[String, Any])
+    val result: Boolean = Expression().eval[Boolean](exp)
     result shouldEqual true
   }
 
@@ -284,7 +288,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseBoolExp(json)
-    val result = Expression.eval[Boolean](exp, Map.empty[String, Any])
+    val result: Boolean = Expression().eval[Boolean](exp)
     result shouldEqual true
   }
 
@@ -305,7 +309,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseBoolExp(json)
-    val result = Expression.eval[Boolean](exp, Map.empty[String, Any])
+    val result: Boolean = Expression().eval[Boolean](exp)
     result shouldEqual true
   }
 
@@ -326,7 +330,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseBoolExp(json)
-    val result = Expression.eval[Boolean](exp, Map.empty[String, Any])
+    val result: Boolean = Expression().eval[Boolean](exp)
     result shouldEqual true
   }
 
@@ -347,7 +351,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseBoolExp(json)
-    val result = Expression.eval[Boolean](exp, Map.empty[String, Any])
+    val result: Boolean = Expression().eval[Boolean](exp)
     result shouldEqual true
   }
 
@@ -361,7 +365,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseStrAtom(JsonParser.parseJsonObj(json))
-    exp.eval(Map("x" -> "HELLO")) shouldEqual "HELLO"
+    val result: String = Expression(Map("x" -> "HELLO")).eval[String](exp)
+    result shouldEqual "HELLO"
   }
 
   it should "work for num symbol" in {
@@ -374,7 +379,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseNumExp(json)
-    exp.eval(Map("x" -> 6.5)) shouldEqual 6.5
+    val result: Double = Expression(Map("x" -> 6.5)).eval[Double](exp)
+    result shouldEqual 6.5
   }
 
   it should "work for and operation" in {
@@ -408,7 +414,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseBoolExp(json)
-    exp.eval(Map("str" -> "Hi", "num" -> 1.1)) shouldEqual true
+    val result: Boolean = Expression(Map("str" -> "Hi", "num" -> 1.1)).eval[Boolean](exp)
+    result shouldEqual true
   }
 
   it should "work for or operation" in {
@@ -442,7 +449,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseBoolExp(json)
-    exp.eval(Map("str" -> "Hi", "num" -> 1.2)) shouldEqual true
+    val result: Boolean = Expression(Map("str" -> "Hi", "num" -> 1.2)).eval[Boolean](exp)
+    result shouldEqual true
   }
 
   it should "work for not operation" in {
@@ -464,7 +472,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseBoolExp(json)
-    exp.eval(Map("str" -> "Hey", "num" -> 1.2)) shouldEqual true
+    val result: Boolean = Expression(Map("str" -> "Hey", "num" -> 1.2)).eval[Boolean](exp)
+    result shouldEqual true
   }
 
   it should "work for if condition" in {
@@ -495,8 +504,12 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseNumExp(json)
-    exp.eval(Map("str" -> "Hi", "num" -> 10.1)) shouldEqual 1.1
-    exp.eval(Map("str" -> "Ho", "num" -> 10.1)) shouldEqual 10.1
+
+    val result1: Double = Expression(Map("str" -> "Hi", "num" -> 10.1)).eval[Double](exp)
+    result1 shouldEqual 1.1
+
+    val result2: Double = Expression(Map("str" -> "Ho", "num" -> 10.1)).eval[Double](exp)
+    result2 shouldEqual 10.1
   }
 
 }

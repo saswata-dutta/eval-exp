@@ -1,5 +1,7 @@
 package org.saswata.expressions
 
+import org.saswata.expressions.Expression.Exp
+
 object Expression {
 
   private val NUM_SCALE: Double = 100.0
@@ -9,8 +11,6 @@ object Expression {
   sealed trait Exp[R] {
     def eval(env: Map[String, Any]): R
   }
-
-  def eval[T](exp: Exp[T], env: Map[String, Any]): T = exp.eval(env)
 
   case class STR_SYMBOL(key: String) extends Exp[String] {
     override def eval(env: Map[String, Any]): String = env.get(key).map(_.asInstanceOf[String]).getOrElse("")
@@ -97,4 +97,8 @@ object Expression {
     }
   }
 
+}
+
+case class Expression(env: Map[String, Any] = Map.empty) {
+  def eval[T](exp: Exp[T]): T = exp.eval(env)
 }
