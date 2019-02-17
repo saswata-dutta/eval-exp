@@ -1,9 +1,7 @@
 
 # eval-exp
 
-[![Build Status](https://travis-ci.org/saswata-dutta/eval-exp.svg?branch=master)](https://travis-ci.org/saswata-dutta/eval-exp)
-
-[![Coverage Status](https://coveralls.io/repos/github/saswata-dutta/eval-exp/badge.svg?branch=develop)](https://coveralls.io/github/saswata-dutta/eval-exp?branch=develop)
+[![Build Status](https://travis-ci.org/saswata-dutta/eval-exp.svg?branch=master)](https://travis-ci.org/saswata-dutta/eval-exp)  [![Coverage Status](https://coveralls.io/repos/github/saswata-dutta/eval-exp/badge.svg?branch=develop)](https://coveralls.io/github/saswata-dutta/eval-exp?branch=develop)
 
 AST and Json-Parser for simple expressions
 
