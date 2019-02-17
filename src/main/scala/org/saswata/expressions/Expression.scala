@@ -1,6 +1,6 @@
 package org.saswata.expressions
 
-import org.saswata.expressions.Expression.Exp
+import org.saswata.expressions.Expression.{Exp, jmap2map, sanitiseValues}
 
 object Expression {
 
@@ -97,8 +97,34 @@ object Expression {
     }
   }
 
+  // helper methods for class
+  def convertValues(v: Any): Any = v match {
+    case n: java.lang.Number =>
+      n.doubleValue()
+    case any => any.toString
+  }
+
+  def jmap2map(jmap: java.util.Map[java.lang.String, java.lang.Object]): Map[String, Any] = {
+    import scala.collection.JavaConverters._
+    jmap.asScala.toMap
+  }
+
+  def sanitiseValues(env: Map[String, Any]): Map[String, Any] = {
+    env.mapValues(convertValues)
+  }
 }
 
-case class Expression(env: Map[String, Any] = Map.empty) {
-  def eval[T](exp: Exp[T]): T = exp.eval(env)
+class Expression(env: Map[String, Any]) {
+
+  def eval[T](exp: Exp[T]): T = exp.eval(sanitiseValues(env))
+
+  // explicit constructors in class for easier invocation form java
+  def this() {
+    this(Map.empty[String, Any])
+  }
+
+  def this(jmap: java.util.Map[java.lang.String, java.lang.Object]) {
+    this(jmap2map(jmap))
+  }
+
 }

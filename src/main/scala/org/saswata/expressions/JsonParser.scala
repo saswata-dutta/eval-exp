@@ -1,5 +1,6 @@
 package org.saswata.expressions
 
+import org.json4s.JsonAST.JNumber
 import org.saswata.expressions.Expression._
 
 object JsonParser {
@@ -118,10 +119,8 @@ object JsonParser {
     typeTag match {
       case "NUM_LITERAL" =>
         val value: Double = extractValue(json) match {
-          case JInt(num) => num.toDouble
-          case JLong(num) => num.toDouble
-          case JDouble(num) => num
-          case JDecimal(num) => num.toDouble
+          case n: JNumber => n.asInstanceOf[JValue].values.asInstanceOf[Number].doubleValue()
+          case any => throw new IllegalArgumentException(s"Found non numeric value $any")
         }
         NUM_LITERAL(value)
 
