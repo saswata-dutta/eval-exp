@@ -16,4 +16,6 @@ AST and Parser for simple expressions
   
   ### Build
   
-  Execute `sbt assembly` to run tests and build the uber jar. 
+  - Execute `sbt assembly` to run tests and build the uber jar. 
+  - Execute `sbt clean coverage test coverageReport` to run tests and generate the coverage report. 
+

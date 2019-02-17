@@ -1,6 +1,5 @@
 package org.saswata.expressions
 
-import org.json4s.JsonAST.JNumber
 import org.saswata.expressions.Expression._
 
 object JsonParser {
@@ -126,12 +125,8 @@ object JsonParser {
   def parseNumAtom(json: JObject, typeTag: String): Exp[Double] = {
     typeTag match {
       case "NUM_LITERAL" =>
-        val value: Double = extractValue(json) match {
-          case n: JNumber => n.asInstanceOf[JValue].values.asInstanceOf[Number].doubleValue()
-          case any => throw new IllegalArgumentException(s"Found non numeric value $any")
-        }
+        val value: Double = extractValue(json).values.asInstanceOf[Number].doubleValue()
         NUM_LITERAL(value)
-
       case "NUM_SYMBOL" => NUM_SYMBOL(extractKey(json))
     }
   }
