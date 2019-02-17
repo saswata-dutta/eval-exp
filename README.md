@@ -1,3 +1,8 @@
+
+[![Build Status](https://travis-ci.org/saswata-dutta/eval-exp.svg?branch=master)](https://travis-ci.org/saswata-dutta/eval-exp)
+
+
+
 # eval-exp
 AST and Parser for simple expressions
 
