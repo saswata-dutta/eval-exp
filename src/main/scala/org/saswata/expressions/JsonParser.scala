@@ -16,17 +16,17 @@ object JsonParser {
   //    "rhs": {???}
   //  }
 
-  private val binary_str_bool_ops: Seq[String] = Seq("STR_EQUALS", "STR_NOT_EQUALS")
-  private val binary_num_bool_ops: Seq[String] = Seq("EQUALS", "NOT_EQUALS",
+  private val BINARY_STR_BOOL_OPS: Seq[String] = Seq("STR_EQUALS", "STR_NOT_EQUALS")
+  private val BINARY_NUM_BOOL_OPS: Seq[String] = Seq("EQUALS", "NOT_EQUALS",
     "LESSER_THAN", "LESSER_THAN_EQ", "GREATER_THAN", "GREATER_THAN_EQ")
-  private val binary_bool_ops: Seq[String] = Seq("AND", "OR")
-  private val unary_bool_ops: Seq[String] = Seq("NOT")
+  private val BINARY_BOOL_OPS: Seq[String] = Seq("AND", "OR")
+  private val UNARY_BOOL_OPS: Seq[String] = Seq("NOT")
 
-  private val binary_num_ops: Seq[String] = Seq("ADD", "SUBTRACT", "MULTIPLY", "DIVIDE")
+  private val BINARY_NUM_OPS: Seq[String] = Seq("ADD", "SUBTRACT", "MULTIPLY", "DIVIDE")
 
-  private val str_atoms: Seq[String] = Seq("STR_SYMBOL", "STR_LITERAL")
-  private val num_atoms: Seq[String] = Seq("NUM_SYMBOL", "NUM_LITERAL")
-  private val bool_atoms: Seq[String] = Seq("BOOL_SYMBOL")
+  private val STR_ATOMS: Seq[String] = Seq("STR_SYMBOL", "STR_LITERAL")
+  private val NUM_ATOMS: Seq[String] = Seq("NUM_SYMBOL", "NUM_LITERAL")
+  private val BOOL_ATOMS: Seq[String] = Seq("BOOL_SYMBOL")
 
   def parseJsonObj(jsonStr: String): JObject = parse(jsonStr).asInstanceOf[JObject]
 
@@ -48,11 +48,11 @@ object JsonParser {
 
   def parseBoolExp(json: JObject): Exp[Boolean] = {
     extractType(json) match {
-      case tag if bool_atoms.contains(tag) => parseBoolAtom(json, tag)
-      case tag if unary_bool_ops.contains(tag) => parseUniBoolOperator(json, tag)
-      case tag if binary_bool_ops.contains(tag) => parseBinBoolOperator(json, tag)
-      case tag if binary_str_bool_ops.contains(tag) => parseBinStrBoolOperator(json, tag)
-      case tag if binary_num_bool_ops.contains(tag) => parseBinNumBoolOperator(json, tag)
+      case tag if BOOL_ATOMS.contains(tag) => parseBoolAtom(json, tag)
+      case tag if UNARY_BOOL_OPS.contains(tag) => parseUniBoolOperator(json, tag)
+      case tag if BINARY_BOOL_OPS.contains(tag) => parseBinBoolOperator(json, tag)
+      case tag if BINARY_STR_BOOL_OPS.contains(tag) => parseBinStrBoolOperator(json, tag)
+      case tag if BINARY_NUM_BOOL_OPS.contains(tag) => parseBinNumBoolOperator(json, tag)
     }
   }
 
@@ -101,7 +101,7 @@ object JsonParser {
 
   def parseStrAtom(json: JObject): Exp[String] = {
     extractType(json) match {
-      case tag if str_atoms.contains(tag) => tag match {
+      case tag if STR_ATOMS.contains(tag) => tag match {
         case "STR_LITERAL" => STR_LITERAL(extractValue(json).asInstanceOf[JString].values)
         case "STR_SYMBOL" => STR_SYMBOL(extractKey(json))
       }
@@ -114,8 +114,8 @@ object JsonParser {
 
   def parseNumExp(json: JObject): Exp[Double] = {
     extractType(json) match {
-      case tag if num_atoms.contains(tag) => parseNumAtom(json, tag)
-      case tag if binary_num_ops.contains(tag) => parseBinNumOperator(json, tag)
+      case tag if NUM_ATOMS.contains(tag) => parseNumAtom(json, tag)
+      case tag if BINARY_NUM_OPS.contains(tag) => parseBinNumOperator(json, tag)
       case "IF" => parseIfCondition(json)
     }
   }
