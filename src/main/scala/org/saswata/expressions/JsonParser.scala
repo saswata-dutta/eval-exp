@@ -1,12 +1,10 @@
 package org.saswata.expressions
 
+import org.json4s._
+import org.json4s.jackson.JsonMethods.parse
 import org.saswata.expressions.Expression._
 
 object JsonParser {
-
-  import org.json4s._
-  import org.json4s.jackson.JsonMethods.parse
-
   // json schema of input
 
   //  {

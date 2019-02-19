@@ -9,8 +9,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     val json =
       """
         |{
-        |	"type": "NUM_LITERAL",
-        |	"value": 1
+        |  "type": "NUM_LITERAL",
+        |  "value": 1
         |}
       """.stripMargin
 
@@ -23,8 +23,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     val json =
       """
         |{
-        |	"type": "NUM_LITERAL",
-        |	"value": 100.1
+        |  "type": "NUM_LITERAL",
+        |  "value": 100.1
         |}
       """.stripMargin
 
@@ -37,8 +37,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     val json =
       """
         |{
-        |	"type": "NUM_LITERAL",
-        |	"value": 100.12
+        |  "type": "NUM_LITERAL",
+        |  "value": 100.12
         |}
       """.stripMargin
 
@@ -51,8 +51,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     val json =
       """
         |{
-        |	"type": "NUM_SYMBOL",
-        |	"key": "num"
+        |  "type": "NUM_SYMBOL",
+        |  "key": "num"
         |}
       """.stripMargin
 
@@ -70,8 +70,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     val json =
       """
         |{
-        |	"type": "BOOL_SYMBOL",
-        |	"key": "flag"
+        |  "type": "BOOL_SYMBOL",
+        |  "key": "flag"
         |}
       """.stripMargin
 
@@ -339,8 +339,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     val json =
       """
         |{
-        |	"type": "STR_LITERAL",
-        |	"value": "HELLO"
+        |  "type": "STR_LITERAL",
+        |  "value": "HELLO"
         |}
       """.stripMargin
 
@@ -395,8 +395,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     val json =
       """
         |{
-        |	"type": "STR_SYMBOL",
-        |	"key": "x"
+        |  "type": "STR_SYMBOL",
+        |  "key": "x"
         |}
       """.stripMargin
 
@@ -409,8 +409,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     val json =
       """
         |{
-        |	"type": "NUM_SYMBOL",
-        |	"key": "x"
+        |  "type": "NUM_SYMBOL",
+        |  "key": "x"
         |}
       """.stripMargin
 
