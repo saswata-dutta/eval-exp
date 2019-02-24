@@ -2,7 +2,7 @@ name := "eval-exp"
 
 version := "0.1"
 
-scalaVersion := "2.12.6"
+scalaVersion := "2.12.8"
 
 scalacOptions ++= Seq(
   "-deprecation", // Emit warning and location for usages of deprecated APIs.
@@ -53,6 +53,8 @@ scalacOptions ++= Seq(
 )
 
 scalacOptions in(Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings")
+
+resolvers += "Artima Maven Repository" at "https://repo.artima.com/releases"
 
 libraryDependencies ++= List(
   "org.json4s" %% "json4s-jackson" % "3.6.4",
