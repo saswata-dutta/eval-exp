@@ -19,6 +19,7 @@ object JsonParser {
   private val BINARY_STR_BOOL_OPS: Seq[String] = Seq("STR_EQUALS", "STR_NOT_EQUALS")
   private val BINARY_NUM_BOOL_OPS: Seq[String] = Seq("EQUALS", "NOT_EQUALS",
     "LESSER_THAN", "LESSER_THAN_EQ", "GREATER_THAN", "GREATER_THAN_EQ")
+  private val NARY_BOOL_OPS: Seq[String] = Seq("NARY_AND", "NARY_OR")
   private val BINARY_BOOL_OPS: Seq[String] = Seq("AND", "OR")
   private val UNARY_BOOL_OPS: Seq[String] = Seq("NOT")
 
@@ -53,6 +54,7 @@ object JsonParser {
       case tag if BINARY_BOOL_OPS.contains(tag) => parseBinBoolOperator(json, tag)
       case tag if BINARY_STR_BOOL_OPS.contains(tag) => parseBinStrBoolOperator(json, tag)
       case tag if BINARY_NUM_BOOL_OPS.contains(tag) => parseBinNumBoolOperator(json, tag)
+      case tag if NARY_BOOL_OPS.contains(tag) => parseNaryBoolOperator(json, tag)
     }
   }
 
@@ -66,6 +68,18 @@ object JsonParser {
     typeTag match {
       case "NOT" => NOT(parseBoolExp(extractRhs(json)))
     }
+  }
+
+  def parseNaryBoolOperator(json: JObject, typeTag: String): Exp[Boolean] = {
+    val rhs = parseBoolExpArray((json \ "rhs").asInstanceOf[JArray])
+    typeTag match {
+      case "NARY_AND" => NARY_AND(rhs)
+      case "NARY_OR" => NARY_OR(rhs)
+    }
+  }
+
+  def parseBoolExpArray(json: JArray): Seq[Exp[Boolean]] = {
+    json.children.collect { case obj: JObject => parseBoolExp(obj) }
   }
 
   def parseBinBoolOperator(json: JObject, typeTag: String): Exp[Boolean] = {

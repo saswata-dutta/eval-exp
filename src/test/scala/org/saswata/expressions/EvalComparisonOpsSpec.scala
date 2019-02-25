@@ -58,4 +58,28 @@ class EvalComparisonOpsSpec extends FlatSpec with Matchers {
     ge.eval(Map("n1" -> 1.009, "n2" -> 1.01)) shouldEqual false
   }
 
+  it should "compute multi operand AND and OR" in {
+    val f1 = BOOL_SYMBOL("f1")
+    val f2 = BOOL_SYMBOL("f2")
+    val f3 = BOOL_SYMBOL("f3")
+    val f4 = BOOL_SYMBOL("f4")
+    val operands = Seq(f1, f2, f3, f4)
+
+    val andEx = NARY_AND(operands)
+    andEx.eval(Map("f1" -> true, "f2" -> true, "f3" -> true, "f4" -> true)) shouldEqual true
+    andEx.eval(Map("f1" -> true, "f2" -> true, "f3" -> true)) shouldEqual false
+
+    val orExp = NARY_OR(operands)
+    orExp.eval(Map("f1" -> true, "f2" -> true, "f3" -> true, "f4" -> true)) shouldEqual true
+    orExp.eval(Map("f4" -> true)) shouldEqual true
+    orExp.eval(Map()) shouldEqual false
+  }
+
+  it should "disallow creation of zero Args N-ary AND/OR" in {
+    val thrown1 = intercept[IllegalArgumentException](NARY_AND(Seq.empty))
+    assert(thrown1.getMessage contains "Args must be present")
+
+    val thrown2 = intercept[IllegalArgumentException](NARY_OR(Seq.empty))
+    assert(thrown2.getMessage contains "Args must be present")
+  }
 }

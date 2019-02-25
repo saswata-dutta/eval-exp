@@ -93,6 +93,16 @@ object Expression {
     override def eval(env: Map[String, Any]): Boolean = !rhs.eval(env)
   }
 
+  case class NARY_AND(rhs: Seq[Exp[Boolean]]) extends Exp[Boolean] {
+    require(rhs.nonEmpty, "Args must be present")
+    override def eval(env: Map[String, Any]): Boolean = rhs.forall(_.eval(env))
+  }
+
+  case class NARY_OR(rhs: Seq[Exp[Boolean]]) extends Exp[Boolean] {
+    require(rhs.nonEmpty, "Args must be present")
+    override def eval(env: Map[String, Any]): Boolean = rhs.exists(_.eval(env))
+  }
+
   case class ADD(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Double] {
     override def eval(env: Map[String, Any]): Double = lhs.eval(env) + rhs.eval(env)
   }
