@@ -618,4 +618,61 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     result3 shouldEqual 0.0
   }
 
+  it should "handle N-ary AND" in {
+    val json =
+      """
+        |{
+        |  "type": "NARY_AND",
+        |  "rhs": [
+        |    {
+        |      "type": "BOOL_SYMBOL",
+        |      "key": "f1"
+        |    },
+        |    {
+        |      "type": "BOOL_SYMBOL",
+        |      "key": "f2"
+        |    },
+        |    {
+        |      "type": "BOOL_SYMBOL",
+        |      "key": "f3"
+        |    }
+        |  ]
+        |}
+      """.stripMargin
+
+    val exp = JsonParser.parseBoolExp(json)
+    new Expression().eval[Boolean](exp) shouldEqual false
+    new Expression(Map("f1" -> true, "f2" -> true)).eval[Boolean](exp) shouldEqual false
+    new Expression(Map("f1" -> true, "f2" -> true, "f3" -> true)).eval[Boolean](exp) shouldEqual true
+    new Expression(Map("f1" -> true, "f2" -> true, "f3" -> false)).eval[Boolean](exp) shouldEqual false
+  }
+
+  it should "handle N-ary OR" in {
+    val json =
+      """
+        |{
+        |  "type": "NARY_OR",
+        |  "rhs": [
+        |    {
+        |      "type": "BOOL_SYMBOL",
+        |      "key": "f1"
+        |    },
+        |    {
+        |      "type": "BOOL_SYMBOL",
+        |      "key": "f2"
+        |    },
+        |    {
+        |      "type": "BOOL_SYMBOL",
+        |      "key": "f3"
+        |    }
+        |  ]
+        |}
+      """.stripMargin
+
+    val exp = JsonParser.parseBoolExp(json)
+    new Expression().eval[Boolean](exp) shouldEqual false
+    new Expression(Map("f1" -> true)).eval[Boolean](exp) shouldEqual true
+    new Expression(Map("f1" -> true, "f2" -> true, "f3" -> true)).eval[Boolean](exp) shouldEqual true
+    new Expression(Map("f1" -> false, "f2" -> false, "f3" -> false)).eval[Boolean](exp) shouldEqual false
+  }
 }
