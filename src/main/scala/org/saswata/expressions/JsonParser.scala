@@ -16,18 +16,6 @@ object JsonParser {
   //    "rhs": {???}
   //  }
 
-  private val BINARY_STR_BOOL_OPS: Seq[String] = Seq("STR_EQUALS", "STR_NOT_EQUALS")
-  private val BINARY_NUM_BOOL_OPS: Seq[String] = Seq("EQUALS", "NOT_EQUALS",
-    "LESSER_THAN", "LESSER_THAN_EQ", "GREATER_THAN", "GREATER_THAN_EQ")
-  private val BINARY_BOOL_OPS: Seq[String] = Seq("AND", "OR")
-  private val UNARY_BOOL_OPS: Seq[String] = Seq("NOT")
-
-  private val BINARY_NUM_OPS: Seq[String] = Seq("ADD", "SUBTRACT", "MULTIPLY", "DIVIDE")
-
-  private val STR_ATOMS: Seq[String] = Seq("STR_SYMBOL", "STR_LITERAL")
-  private val NUM_ATOMS: Seq[String] = Seq("NUM_SYMBOL", "NUM_LITERAL")
-  private val BOOL_ATOMS: Seq[String] = Seq("BOOL_SYMBOL")
-
   def parseJsonObj(jsonStr: String): JObject = parse(jsonStr).asInstanceOf[JObject]
 
   def extractType(json: JObject): String = (json \ "type").asInstanceOf[JString].values
@@ -42,17 +30,29 @@ object JsonParser {
 
   def extractCond(json: JObject): JObject = (json \ "cond").asInstanceOf[JObject]
 
+  def parseOperatorType(json: JObject): (String, OperatorType.Value) = {
+    val tag = extractType(json)
+    val operatorType = OperatorType.typeOf(tag).
+      getOrElse(throw new IllegalArgumentException(s"Unknown operator type $tag"))
+
+    (tag, operatorType)
+  }
+
   def parseBoolExp(jsonStr: String): Exp[Boolean] = {
     parseBoolExp(parseJsonObj(jsonStr))
   }
 
   def parseBoolExp(json: JObject): Exp[Boolean] = {
-    extractType(json) match {
-      case tag if BOOL_ATOMS.contains(tag) => parseBoolAtom(json, tag)
-      case tag if UNARY_BOOL_OPS.contains(tag) => parseUniBoolOperator(json, tag)
-      case tag if BINARY_BOOL_OPS.contains(tag) => parseBinBoolOperator(json, tag)
-      case tag if BINARY_STR_BOOL_OPS.contains(tag) => parseBinStrBoolOperator(json, tag)
-      case tag if BINARY_NUM_BOOL_OPS.contains(tag) => parseBinNumBoolOperator(json, tag)
+    val (tag, operatorType) = parseOperatorType(json)
+
+    operatorType match {
+      case OperatorType.BOOL_ATOMS => parseBoolAtom(json, tag)
+      case OperatorType.UNARY_BOOL_OPS => parseUniBoolOperator(json, tag)
+      case OperatorType.BINARY_BOOL_OPS => parseBinBoolOperator(json, tag)
+      case OperatorType.NARY_BOOL_OPS => parseNaryBoolOperator(json, tag)
+      case OperatorType.BINARY_STR_BOOL_OPS => parseBinStrBoolOperator(json, tag)
+      case OperatorType.BINARY_NUM_BOOL_OPS => parseBinNumBoolOperator(json, tag)
+      case _ => throw new IllegalArgumentException(s"Incompatible Boolean operator $tag")
     }
   }
 
@@ -66,6 +66,18 @@ object JsonParser {
     typeTag match {
       case "NOT" => NOT(parseBoolExp(extractRhs(json)))
     }
+  }
+
+  def parseNaryBoolOperator(json: JObject, typeTag: String): Exp[Boolean] = {
+    val rhs = parseBoolExpArray((json \ "rhs").asInstanceOf[JArray])
+    typeTag match {
+      case "NARY_AND" => NARY_AND(rhs)
+      case "NARY_OR" => NARY_OR(rhs)
+    }
+  }
+
+  def parseBoolExpArray(json: JArray): Seq[Exp[Boolean]] = {
+    json.children.collect { case obj: JObject => parseBoolExp(obj) }
   }
 
   def parseBinBoolOperator(json: JObject, typeTag: String): Exp[Boolean] = {
@@ -100,11 +112,14 @@ object JsonParser {
   }
 
   def parseStrAtom(json: JObject): Exp[String] = {
-    extractType(json) match {
-      case tag if STR_ATOMS.contains(tag) => tag match {
+    val (tag, operatorType) = parseOperatorType(json)
+
+    operatorType match {
+      case OperatorType.STR_ATOMS => tag match {
         case "STR_LITERAL" => STR_LITERAL(extractValue(json).asInstanceOf[JString].values)
         case "STR_SYMBOL" => STR_SYMBOL(extractKey(json))
       }
+      case _ => throw new IllegalArgumentException(s"Incompatible String atom type $tag")
     }
   }
 
@@ -113,10 +128,13 @@ object JsonParser {
   }
 
   def parseNumExp(json: JObject): Exp[Double] = {
-    extractType(json) match {
-      case tag if NUM_ATOMS.contains(tag) => parseNumAtom(json, tag)
-      case tag if BINARY_NUM_OPS.contains(tag) => parseBinNumOperator(json, tag)
-      case "IF" => parseIfCondition(json)
+    val (tag, operatorType) = parseOperatorType(json)
+
+    operatorType match {
+      case OperatorType.NUM_ATOMS => parseNumAtom(json, tag)
+      case OperatorType.BINARY_NUM_OPS => parseBinNumOperator(json, tag)
+      case OperatorType.IF => parseIfCondition(json)
+      case _ => throw new IllegalArgumentException(s"Incompatible Numeric operator $tag")
     }
   }
 
