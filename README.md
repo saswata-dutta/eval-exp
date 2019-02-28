@@ -6,20 +6,24 @@
 
 AST and Json-Parser for simple expressions
 
-### Json Schema for defining expressions
+## Json Schema for defining expressions
 
-```
+```javascript
   {
     "type": <String representing the type of the entity>,
     "key": <String representing the key of the symbol>,
     "value": <String or Number representing the literal>,
-    "cond": <Object representing the condition for if statement>,
+    "cond": <Object representing the condition for IF statement>,
     "lhs": <Object representing the lhs operand>,
     "rhs": <Object representing the rhs operand>
   }
 ```
   
-### Build
+## Build
   
-- Execute `sbt assembly` to run tests and build the uber jar. 
-- Execute `sbt clean coverage test coverageReport` to run tests and generate the coverage report.
+  - Execute `sbt assembly` to run tests and build the uber jar.
+  - Execute `sbt clean coverage test coverageReport` to run tests and generate the coverage report.
+
+## Json Generator Util
+
+Use the [javascript snippet](https://gist.github.com/saswata-dutta/aeaf105908d83eea185f312c5c2cb711) to easily generate the json for complex expressions.
