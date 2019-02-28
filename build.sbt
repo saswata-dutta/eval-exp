@@ -54,7 +54,9 @@ scalacOptions ++= Seq(
 
 scalacOptions in(Compile, console) --= Seq("-Ywarn-unused:imports", "-Xfatal-warnings")
 
-resolvers += "Artima Maven Repository" at "https://repo.artima.com/releases"
+resolvers ++= Seq(Resolver.typesafeRepo("releases"),
+  "Artima Maven Repository" at "https://repo.artima.com/releases"
+)
 
 libraryDependencies ++= List(
   "org.json4s" %% "json4s-jackson" % "3.6.4",

@@ -7,4 +7,6 @@ script:
   - sbt clean coverage test
 
 after_success:
-  - sbt coverageReport coveralls
+  - sbt coverageReport
+  - sbt coveralls
+  - sbt codacyCoverage
