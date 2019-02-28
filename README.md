@@ -4,6 +4,7 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/de5c9be4524641488e45da1a74b3d09a)](https://app.codacy.com/app/sasdutta/eval-exp?utm_source=github.com&utm_medium=referral&utm_content=saswata-dutta/eval-exp&utm_campaign=Badge_Grade_Dashboard)
 [![](https://jitpack.io/v/saswata-dutta/eval-exp.svg)](https://jitpack.io/#saswata-dutta/eval-exp)
 [![CodeFactor](https://www.codefactor.io/repository/github/saswata-dutta/eval-exp/badge)](https://www.codefactor.io/repository/github/saswata-dutta/eval-exp)
+[![codecov](https://codecov.io/gh/saswata-dutta/eval-exp/branch/master/graph/badge.svg)](https://codecov.io/gh/saswata-dutta/eval-exp)
 
 AST and Json-Parser for simple expressions
 
