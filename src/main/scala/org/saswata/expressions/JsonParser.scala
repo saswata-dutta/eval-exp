@@ -46,12 +46,12 @@ object JsonParser {
     val (tag, operatorType) = parseOperatorType(json)
 
     operatorType match {
-      case OperatorType.BOOL_ATOMS => parseBoolAtom(json, tag)
-      case OperatorType.UNARY_BOOL_OPS => parseUniBoolOperator(json, tag)
-      case OperatorType.BINARY_BOOL_OPS => parseBinBoolOperator(json, tag)
-      case OperatorType.NARY_BOOL_OPS => parseNaryBoolOperator(json, tag)
-      case OperatorType.BINARY_STR_BOOL_OPS => parseBinStrBoolOperator(json, tag)
-      case OperatorType.BINARY_NUM_BOOL_OPS => parseBinNumBoolOperator(json, tag)
+      case OperatorType.BoolAtoms => parseBoolAtom(json, tag)
+      case OperatorType.UnaryLogicOps => parseUniBoolOperator(json, tag)
+      case OperatorType.BinaryLogicOps => parseBinBoolOperator(json, tag)
+      case OperatorType.NaryLogicOps => parseNaryBoolOperator(json, tag)
+      case OperatorType.StrRelationOps => parseBinStrBoolOperator(json, tag)
+      case OperatorType.NumRelationOps => parseBinNumBoolOperator(json, tag)
       case _ => throw new IllegalArgumentException(s"Incompatible Boolean operator $tag")
     }
   }
@@ -115,7 +115,7 @@ object JsonParser {
     val (tag, operatorType) = parseOperatorType(json)
 
     operatorType match {
-      case OperatorType.STR_ATOMS => tag match {
+      case OperatorType.StrAtoms => tag match {
         case "STR_LITERAL" => STR_LITERAL(extractValue(json).asInstanceOf[JString].values)
         case "STR_SYMBOL" => STR_SYMBOL(extractKey(json))
       }
@@ -131,9 +131,9 @@ object JsonParser {
     val (tag, operatorType) = parseOperatorType(json)
 
     operatorType match {
-      case OperatorType.NUM_ATOMS => parseNumAtom(json, tag)
-      case OperatorType.BINARY_NUM_OPS => parseBinNumOperator(json, tag)
-      case OperatorType.IF => parseIfCondition(json)
+      case OperatorType.NumAtoms => parseNumAtom(json, tag)
+      case OperatorType.BinaryArithmeticOps => parseBinNumOperator(json, tag)
+      case OperatorType.If => parseIfCondition(json)
       case _ => throw new IllegalArgumentException(s"Incompatible Numeric operator $tag")
     }
   }
