@@ -49,35 +49,35 @@ object Expression {
     override def eval(env: Map[String, Any]): Boolean = !fuzzyEquals(lhs.eval(env), rhs.eval(env))
   }
 
+  def numericCompare(env: Map[String, Any],
+                     lhs: Exp[Double], rhs: Exp[Double],
+                     comparator: (Double, Double) => Boolean): Boolean = {
+    val lhsAns = lhs.eval(env)
+    val rhsAns = rhs.eval(env)
+    comparator(lhsAns, rhsAns)
+  }
+
   case class LESSER_THAN(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
     override def eval(env: Map[String, Any]): Boolean = {
-      val lhsAns = lhs.eval(env)
-      val rhsAns = rhs.eval(env)
-      !fuzzyEquals(lhsAns, rhsAns) && lhsAns < rhsAns
+      numericCompare(env, lhs, rhs, (lhsAns, rhsAns) => !fuzzyEquals(lhsAns, rhsAns) && lhsAns < rhsAns)
     }
   }
 
   case class LESSER_THAN_EQ(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
     override def eval(env: Map[String, Any]): Boolean = {
-      val lhsAns = lhs.eval(env)
-      val rhsAns = rhs.eval(env)
-      fuzzyEquals(lhsAns, rhsAns) || lhsAns <= rhsAns
+      numericCompare(env, lhs, rhs, (lhsAns, rhsAns) => fuzzyEquals(lhsAns, rhsAns) || lhsAns <= rhsAns)
     }
   }
 
   case class GREATER_THAN(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
     override def eval(env: Map[String, Any]): Boolean = {
-      val lhsAns = lhs.eval(env)
-      val rhsAns = rhs.eval(env)
-      !fuzzyEquals(lhsAns, rhsAns) && lhsAns > rhsAns
+      numericCompare(env, lhs, rhs, (lhsAns, rhsAns) => !fuzzyEquals(lhsAns, rhsAns) && lhsAns > rhsAns)
     }
   }
 
   case class GREATER_THAN_EQ(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
     override def eval(env: Map[String, Any]): Boolean = {
-      val lhsAns = lhs.eval(env)
-      val rhsAns = rhs.eval(env)
-      fuzzyEquals(lhsAns, rhsAns) || lhsAns > rhsAns
+      numericCompare(env, lhs, rhs, (lhsAns, rhsAns) => fuzzyEquals(lhsAns, rhsAns) || lhsAns > rhsAns)
     }
   }
 
@@ -95,11 +95,13 @@ object Expression {
 
   case class NARY_AND(rhs: Seq[Exp[Boolean]]) extends Exp[Boolean] {
     require(rhs.nonEmpty, "Args must be present")
+
     override def eval(env: Map[String, Any]): Boolean = rhs.forall(_.eval(env))
   }
 
   case class NARY_OR(rhs: Seq[Exp[Boolean]]) extends Exp[Boolean] {
     require(rhs.nonEmpty, "Args must be present")
+
     override def eval(env: Map[String, Any]): Boolean = rhs.exists(_.eval(env))
   }
 
