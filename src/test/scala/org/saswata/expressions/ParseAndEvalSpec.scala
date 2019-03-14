@@ -65,6 +65,29 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     new Expression(Map("num" -> BigInt(100))).eval[Double](exp) shouldEqual 100.0
   }
 
+  it should "handle numeric symbols with string value" in {
+    val json =
+      """
+        |{
+        |  "type": "NUM_SYMBOL",
+        |  "key": "num"
+        |}
+      """.stripMargin
+
+    val exp = JsonParser.parseNumExp(json)
+    new Expression(Map("num" -> "0")).eval[Double](exp) shouldEqual 0
+    new Expression(Map("num" -> "00000")).eval[Double](exp) shouldEqual 0
+    new Expression(Map("num" -> "1")).eval[Double](exp) shouldEqual 1.0
+    new Expression(Map("num" -> "+1")).eval[Double](exp) shouldEqual 1.0
+    new Expression(Map("num" -> "-1")).eval[Double](exp) shouldEqual -1.0
+    new Expression(Map("num" -> "001")).eval[Double](exp) shouldEqual 1.0
+    new Expression(Map("num" -> "-0001")).eval[Double](exp) shouldEqual -1.0
+    new Expression(Map("num" -> "10.5")).eval[Double](exp) shouldEqual 10.5
+    new Expression(Map("num" -> "10.5F")).eval[Double](exp) shouldEqual 10.5
+    new Expression(Map("num" -> "1E2")).eval[Double](exp) shouldEqual 100
+    new Expression(Map("num" -> "1E-2")).eval[Double](exp) shouldEqual 0.01
+  }
+
   it should "handle bool symbols" in {
     val json =
       """
@@ -79,6 +102,20 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     new Expression(Map("num" -> 1)).eval[Boolean](exp) shouldEqual false
     new Expression(Map("flag" -> false)).eval[Boolean](exp) shouldEqual false
     new Expression(Map("flag" -> true)).eval[Boolean](exp) shouldEqual true
+  }
+
+  it should "handle bool symbols with string value" in {
+    val json =
+      """
+        |{
+        |  "type": "BOOL_SYMBOL",
+        |  "key": "flag"
+        |}
+      """.stripMargin
+
+    val exp = JsonParser.parseBoolExp(json)
+    new Expression(Map("flag" -> "false")).eval[Boolean](exp) shouldEqual false
+    new Expression(Map("flag" -> "true")).eval[Boolean](exp) shouldEqual true
   }
 
   it should "handle numeric add" in {
