@@ -9,8 +9,15 @@ object Expression {
   }
 
   case class BOOL_SYMBOL(key: String) extends Exp[Boolean] {
+    def parseBool(x: Any): Boolean = {
+      x match {
+        case b: Boolean => b
+        case s: String => s.toBoolean
+      }
+    }
+
     override def eval(env: Map[String, Any]): Boolean =
-      env.get(key).map(_.asInstanceOf[Boolean]).getOrElse(false)
+      env.get(key).exists(parseBool)
   }
 
   case class STR_SYMBOL(key: String) extends Exp[String] {
@@ -22,7 +29,14 @@ object Expression {
   }
 
   case class NUM_SYMBOL(key: String) extends Exp[Double] {
-    override def eval(env: Map[String, Any]): Double = env.get(key).map(_.asInstanceOf[Double]).getOrElse(0.0)
+    def parseNum(x: Any): Double = {
+      x match {
+        case n: java.lang.Number => n.doubleValue()
+        case s: String => s.toDouble
+      }
+    }
+
+    override def eval(env: Map[String, Any]): Double = env.get(key).map(parseNum).getOrElse(0.0)
   }
 
   case class NUM_LITERAL(value: Double) extends Exp[Double] {
