@@ -154,7 +154,7 @@ object Expression {
   }
 
   def sanitiseValues(env: Map[String, Any]): Map[String, Any] = {
-    env.mapValues(captureEnvValues)
+    env.filter(_._2 != null).mapValues(captureEnvValues)
   }
 }
 
@@ -170,5 +170,4 @@ class Expression(env: Map[String, Any]) {
   def this(jmap: java.util.Map[java.lang.String, java.lang.Object]) {
     this(jmap2map(jmap))
   }
-
 }

@@ -17,6 +17,7 @@ class EvaluateWrapperSpec extends FlatSpec with Matchers {
     Evaluate.fromJsonAsNumber(Map.empty[String, Any], json) shouldEqual 0
     Evaluate.fromJsonAsNumber(Map("num" -> 1), json) shouldEqual 1.0
     Evaluate.fromJsonAsNumber(Map("num" -> "2"), json) shouldEqual 2.0
+    Evaluate.fromJsonAsNumber(Map("num" -> null), json) shouldEqual 0
 
     val jmap: java.util.Map[java.lang.String, java.lang.Object] = new util.HashMap()
     Evaluate.fromJsonAsNumber(jmap, json) shouldEqual 0
@@ -24,6 +25,8 @@ class EvaluateWrapperSpec extends FlatSpec with Matchers {
     Evaluate.fromJsonAsNumber(jmap, json) shouldEqual 1.0
     jmap.put("num", "2")
     Evaluate.fromJsonAsNumber(jmap, json) shouldEqual 2.0
+    jmap.put("num", null)
+    Evaluate.fromJsonAsNumber(jmap, json) shouldEqual 0
   }
 
   it should "evaluate bool expressions" in {
@@ -37,6 +40,7 @@ class EvaluateWrapperSpec extends FlatSpec with Matchers {
 
     Evaluate.fromJsonAsBool(Map.empty[String, Any], json) shouldEqual false
     Evaluate.fromJsonAsBool(Map("num" -> 1), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("flag" -> null), json) shouldEqual false
     Evaluate.fromJsonAsBool(Map("flag" -> false), json) shouldEqual false
     Evaluate.fromJsonAsBool(Map("flag" -> true), json) shouldEqual true
     Evaluate.fromJsonAsBool(Map("flag" -> "true"), json) shouldEqual true
@@ -51,5 +55,7 @@ class EvaluateWrapperSpec extends FlatSpec with Matchers {
     Evaluate.fromJsonAsBool(jmap, json) shouldEqual false
     jmap.put("flag", java.lang.Boolean.TRUE)
     Evaluate.fromJsonAsBool(jmap, json) shouldEqual true
+    jmap.put("flag", null)
+    Evaluate.fromJsonAsBool(jmap, json) shouldEqual false
   }
 }
