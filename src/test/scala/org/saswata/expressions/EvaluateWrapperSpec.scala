@@ -58,4 +58,8 @@ class EvaluateWrapperSpec extends FlatSpec with Matchers {
     jmap.put("flag", null)
     Evaluate.fromJsonAsBool(jmap, json) shouldEqual false
   }
+
+  it should "evaluate set_contains operations" in {
+
+  }
 }
