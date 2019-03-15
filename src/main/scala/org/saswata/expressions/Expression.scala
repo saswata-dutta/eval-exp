@@ -1,8 +1,7 @@
 package org.saswata.expressions
 
-import org.saswata.expressions.Expression.{Exp, jmap2map, sanitiseValues}
-
-import scala.collection.JavaConverters._
+import org.saswata.expressions.Expression.Exp
+import org.saswata.expressions.Utils._
 
 object Expression {
 
@@ -11,15 +10,11 @@ object Expression {
   }
 
   case class BOOL_SYMBOL(key: String) extends Exp[Boolean] {
-    def parseBool(x: Any): Boolean = {
-      x match {
+    override def eval(env: Map[String, Any]): Boolean =
+      env.get(key).collect {
         case b: Boolean => b
         case s: String => s.toBoolean
-      }
-    }
-
-    override def eval(env: Map[String, Any]): Boolean =
-      env.get(key).exists(parseBool)
+      }.getOrElse(false)
   }
 
   case class STR_SYMBOL(key: String) extends Exp[String] {
@@ -31,14 +26,10 @@ object Expression {
   }
 
   case class NUM_SYMBOL(key: String) extends Exp[Double] {
-    def parseNum(x: Any): Double = {
-      x match {
-        case n: java.lang.Number => n.doubleValue()
-        case s: String => s.toDouble
-      }
-    }
-
-    override def eval(env: Map[String, Any]): Double = env.get(key).map(parseNum).getOrElse(0.0)
+    override def eval(env: Map[String, Any]): Double = env.get(key).collect {
+      case n: java.lang.Number => n.doubleValue()
+      case s: String => s.toDouble
+    }.getOrElse(0.0)
   }
 
   case class NUM_LITERAL(value: Double) extends Exp[Double] {
@@ -143,22 +134,18 @@ object Expression {
     }
   }
 
-  def jmap2map(jmap: java.util.Map[java.lang.String, java.lang.Object]): Map[String, Any] = {
-    jmap.asScala.toMap
-  }
-
-  def sanitiseValues(env: Map[String, Any]): Map[String, Any] = {
-    def collectStrings(set: Set[_]): Set[String] = set.collect { case s: String => s }
-
-    env.filter(_._2 != null).collect {
-      case (k: String, b: Boolean) => (k, b)
-      case (k: String, n: java.lang.Number) => (k, n.doubleValue())
-      case (k: String, s: String) => (k, s)
-      case (k: String, jIter: java.lang.Iterable[_]) => (k, collectStrings(jIter.asScala.toSet))
-      case (k: String, seq: Seq[_]) => (k, collectStrings(seq.toSet))
-      case (k: String, set: Set[_]) => (k, collectStrings(set))
+  case class STR_SET_SYMBOL(key: String) extends Exp[Set[String]] {
+    override def eval(env: Map[String, Any]): Set[String] = {
+      env.get(key).collect {
+        case set: Set[_] => collectStrings(set)
+      }.getOrElse(Set.empty[String])
     }
   }
+
+  case class STR_SET_CONTAINS(lhs: Exp[Set[String]], rhs: Exp[String]) extends Exp[Boolean] {
+    override def eval(env: Map[String, Any]): Boolean = lhs.eval(env).contains(rhs.eval(env))
+  }
+
 }
 
 class Expression(env: Map[String, Any]) {
