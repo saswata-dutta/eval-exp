@@ -52,6 +52,7 @@ object JsonParser {
       case OperatorType.NaryLogicOps => parseNaryBoolOperator(json, tag)
       case OperatorType.StrRelationOps => parseBinStrBoolOperator(json, tag)
       case OperatorType.NumRelationOps => parseBinNumBoolOperator(json, tag)
+      case OperatorType.StrSetBoolOps => parseStrSetBoolOperator(json, tag)
       case _ => throw new IllegalArgumentException(s"Incompatible Boolean operator $tag")
     }
   }
@@ -108,6 +109,25 @@ object JsonParser {
       case "LESSER_THAN_EQ" => LESSER_THAN_EQ(parseNumExp(lhs), parseNumExp(rhs))
       case "GREATER_THAN" => GREATER_THAN(parseNumExp(lhs), parseNumExp(rhs))
       case "GREATER_THAN_EQ" => GREATER_THAN_EQ(parseNumExp(lhs), parseNumExp(rhs))
+    }
+  }
+
+  def parseStrSetBoolOperator(json: JObject, typeTag: String): Exp[Boolean] = {
+    val lhs = extractLhs(json)
+    val rhs = extractRhs(json)
+    typeTag match {
+      case "STR_SET_CONTAINS" => STR_SET_CONTAINS(parseStrSetAtom(lhs), parseStrAtom(rhs))
+    }
+  }
+
+  def parseStrSetAtom(json: JObject): Exp[Set[String]] = {
+    val (tag, operatorType) = parseOperatorType(json)
+
+    operatorType match {
+      case OperatorType.StrSetAtoms => tag match {
+        case "STR_SET_SYMBOL" => STR_SET_SYMBOL(extractKey(json))
+      }
+      case _ => throw new IllegalArgumentException(s"Incompatible SET atom type $tag")
     }
   }
 
