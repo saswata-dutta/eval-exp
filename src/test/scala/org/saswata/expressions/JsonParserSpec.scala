@@ -113,4 +113,25 @@ class JsonParserSpec extends FlatSpec with Matchers {
     val thrown = intercept[IllegalArgumentException](JsonParser.parseBoolExp(json))
     thrown.getMessage shouldEqual "Incompatible Numeric operator STR_LITERAL"
   }
+
+  it should "indicate error in case String type is compared as SET" in {
+    val json =
+      """
+        |{
+        |    "lhs": {
+        |        "key": "tags",
+        |        "type": "STR_SYMBOL"
+        |    },
+        |    "rhs": {
+        |        "key": "tag",
+        |        "type": "STR_SYMBOL"
+        |    },
+        |    "type": "STR_SET_CONTAINS"
+        |}
+      """.stripMargin
+
+    val thrown = intercept[IllegalArgumentException](JsonParser.parseBoolExp(json))
+    thrown.getMessage shouldEqual "Incompatible SET atom type STR_SYMBOL"
+  }
+
 }
