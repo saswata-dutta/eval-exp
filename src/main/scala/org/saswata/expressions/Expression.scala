@@ -2,6 +2,8 @@ package org.saswata.expressions
 
 import org.saswata.expressions.Expression.{Exp, jmap2map, sanitiseValues}
 
+import scala.collection.JavaConverters._
+
 object Expression {
 
   sealed trait Exp[R] {
@@ -141,20 +143,21 @@ object Expression {
     }
   }
 
-  // helper methods for class
-  def captureEnvValues(v: Any): Any = v match {
-    case b: Boolean => b
-    case n: java.lang.Number => n.doubleValue()
-    case s: String => s
-  }
-
   def jmap2map(jmap: java.util.Map[java.lang.String, java.lang.Object]): Map[String, Any] = {
-    import scala.collection.JavaConverters._
     jmap.asScala.toMap
   }
 
   def sanitiseValues(env: Map[String, Any]): Map[String, Any] = {
-    env.filter(_._2 != null).mapValues(captureEnvValues)
+    def collectStrings(set: Set[_]): Set[String] = set.collect { case s: String => s }
+
+    env.filter(_._2 != null).collect {
+      case (k: String, b: Boolean) => (k, b)
+      case (k: String, n: java.lang.Number) => (k, n.doubleValue())
+      case (k: String, s: String) => (k, s)
+      case (k: String, jIter: java.lang.Iterable[_]) => (k, collectStrings(jIter.asScala.toSet))
+      case (k: String, seq: Seq[_]) => (k, collectStrings(seq.toSet))
+      case (k: String, set: Set[_]) => (k, collectStrings(set))
+    }
   }
 }
 
