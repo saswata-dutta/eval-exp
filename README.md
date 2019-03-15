@@ -1,10 +1,10 @@
 # eval-exp 
 [![Build Status](https://travis-ci.org/saswata-dutta/eval-exp.svg?branch=master)](https://travis-ci.org/saswata-dutta/eval-exp)
-[![Coverage Status](https://coveralls.io/repos/github/saswata-dutta/eval-exp/badge.svg?branch=develop)](https://coveralls.io/github/saswata-dutta/eval-exp?branch=develop)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/de5c9be4524641488e45da1a74b3d09a)](https://app.codacy.com/app/sasdutta/eval-exp?utm_source=github.com&utm_medium=referral&utm_content=saswata-dutta/eval-exp&utm_campaign=Badge_Grade_Dashboard)
 [![](https://jitpack.io/v/saswata-dutta/eval-exp.svg)](https://jitpack.io/#saswata-dutta/eval-exp)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/de5c9be4524641488e45da1a74b3d09a)](https://app.codacy.com/app/sasdutta/eval-exp?utm_source=github.com&utm_medium=referral&utm_content=saswata-dutta/eval-exp&utm_campaign=Badge_Grade_Dashboard)
 [![CodeFactor](https://www.codefactor.io/repository/github/saswata-dutta/eval-exp/badge)](https://www.codefactor.io/repository/github/saswata-dutta/eval-exp)
 [![codecov](https://codecov.io/gh/saswata-dutta/eval-exp/branch/master/graph/badge.svg)](https://codecov.io/gh/saswata-dutta/eval-exp)
+[![Coverage Status](https://coveralls.io/repos/github/saswata-dutta/eval-exp/badge.svg?branch=develop)](https://coveralls.io/github/saswata-dutta/eval-exp?branch=develop)
 
 AST and Json-Parser for simple expressions
 
@@ -22,9 +22,9 @@ AST and Json-Parser for simple expressions
 ```
   
 ## Build
-  
-  - Execute `sbt assembly` to run tests and build the uber jar.
-  - Execute `sbt clean coverage test coverageReport` to run tests and generate the coverage report.
+
+- Execute `sbt assembly` to run tests and build the uber jar.
+- Execute `sbt clean coverage test coverageReport` to run tests and generate the coverage report.
 
 ## Json Generator Util
 
