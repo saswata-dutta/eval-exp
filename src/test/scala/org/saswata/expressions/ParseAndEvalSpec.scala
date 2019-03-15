@@ -437,8 +437,9 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     val exp = JsonParser.parseStrAtom(JsonParser.parseJsonObj(json))
-    val result: String = new Expression(Map("x" -> "HELLO")).eval[String](exp)
-    result shouldEqual "HELLO"
+    new Expression(Map("x" -> "HELLO")).eval[String](exp) shouldEqual "HELLO"
+    new Expression(Map("x" -> 1)).eval[String](exp) shouldEqual "1.0"
+    new Expression(Map("x" -> 100.25)).eval[String](exp) shouldEqual "100.25"
   }
 
   it should "handle num symbol" in {

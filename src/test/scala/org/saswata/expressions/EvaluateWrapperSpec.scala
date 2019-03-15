@@ -63,7 +63,71 @@ class EvaluateWrapperSpec extends FlatSpec with Matchers {
     Evaluate.fromJsonAsBool(jmap, json) shouldEqual false
   }
 
-  it should "evaluate set_contains operations" in {
+  it should "parse and evaluate String set contains" in {
+    val json =
+      """
+        |{
+        |    "lhs": {
+        |        "key": "tags",
+        |        "type": "STR_SET_SYMBOL"
+        |    },
+        |    "rhs": {
+        |        "key": "tag",
+        |        "type": "STR_SYMBOL"
+        |    },
+        |    "type": "STR_SET_CONTAINS"
+        |}
+      """.stripMargin
 
+    Evaluate.fromJsonAsBool(Map.empty[String, Any], json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tag" -> "x"), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tag" -> 1L), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tag" -> 1.25), json) shouldEqual false
+
+    Evaluate.fromJsonAsBool(Map("bla" -> Set(1, 2, 3)), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tags" -> Set(1, 2, 3)), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tags" -> Set("a", "b", "c")), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tags" -> Seq("a", "b", "c")), json) shouldEqual false
+
+    Evaluate.fromJsonAsBool(Map("tags" -> Set.empty[String], "tag" -> "a"), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tags" -> Seq.empty[String], "tag" -> "a"), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tags" -> Set(1, 2, 3), "tag" -> "a"), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tags" -> Set("a", "b", "c"), "tag" -> 1), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tags" -> Seq("a", "b", "c"), "tag" -> "x"), json) shouldEqual false
+
+    Evaluate.fromJsonAsBool(Map("tags" -> Set(1, 2, 3), "tag" -> 1), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tags" -> Seq(1, 2, 3), "tag" -> 1), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tags" -> Seq("a", "b", "c"), "tag" -> "c"), json) shouldEqual true
+
+    val jmap: java.util.Map[java.lang.String, java.lang.Object] = new util.HashMap()
+    Evaluate.fromJsonAsBool(jmap, json) shouldEqual false
+
+    jmap.put("tag", java.lang.Integer.valueOf(1))
+    Evaluate.fromJsonAsBool(jmap, json) shouldEqual false
+
+    jmap.put("tags", java.util.Arrays.asList(1, 2, 3))
+    Evaluate.fromJsonAsBool(jmap, json) shouldEqual false
+
+    jmap.put("tags", java.util.Arrays.asList("1.0", 2, 3))
+    Evaluate.fromJsonAsBool(jmap, json) shouldEqual true
+
+    jmap.put("tag", "x")
+    jmap.put("tags", java.util.Collections.singleton("y"))
+    Evaluate.fromJsonAsBool(jmap, json) shouldEqual false
+    jmap.put("tags", java.util.Collections.singleton("x"))
+    Evaluate.fromJsonAsBool(jmap, json) shouldEqual true
+
+    jmap.put("tag", null)
+    Evaluate.fromJsonAsBool(jmap, json) shouldEqual false
+
+    jmap.put("tag", "x")
+    jmap.put("tags", new java.util.HashSet(java.util.Arrays.asList("a", "b", "x")))
+    Evaluate.fromJsonAsBool(jmap, json) shouldEqual true
+    jmap.put("tags", java.util.Collections.emptyList())
+    Evaluate.fromJsonAsBool(jmap, json) shouldEqual false
+    jmap.put("tags", java.util.Collections.emptySet())
+    Evaluate.fromJsonAsBool(jmap, json) shouldEqual false
+    jmap.put("tags", null)
+    Evaluate.fromJsonAsBool(jmap, json) shouldEqual false
   }
 }

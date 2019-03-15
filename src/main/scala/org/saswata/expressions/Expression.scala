@@ -18,7 +18,7 @@ object Expression {
   }
 
   case class STR_SYMBOL(key: String) extends Exp[String] {
-    override def eval(env: Map[String, Any]): String = env.get(key).map(_.asInstanceOf[String]).getOrElse("")
+    override def eval(env: Map[String, Any]): String = env.get(key).map(_.toString).getOrElse("")
   }
 
   case class STR_LITERAL(value: String) extends Exp[String] {
