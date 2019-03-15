@@ -18,6 +18,9 @@ object OperatorType extends Enumeration {
   val BinaryLogicOps = Val(Seq("AND", "OR"))
   val NaryLogicOps = Val(Seq("NARY_AND", "NARY_OR"))
 
+  val StrSetAtom = Val(Seq("STR_SET_SYMBOL"))
+  val StrSetOps = Val(Seq("STR_SET_CONTAINS"))
+
   val BinaryArithmeticOps = Val(Seq("ADD", "SUBTRACT", "MULTIPLY", "DIVIDE"))
 
   val If = Val(Seq("IF"))
