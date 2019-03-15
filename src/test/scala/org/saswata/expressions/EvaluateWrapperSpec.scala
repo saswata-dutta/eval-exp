@@ -25,6 +25,10 @@ class EvaluateWrapperSpec extends FlatSpec with Matchers {
     Evaluate.fromJsonAsNumber(jmap, json) shouldEqual 1.0
     jmap.put("num", "2")
     Evaluate.fromJsonAsNumber(jmap, json) shouldEqual 2.0
+    jmap.put("num", java.lang.Long.MAX_VALUE.toString)
+    Evaluate.fromJsonAsNumber(jmap, json) shouldEqual java.lang.Long.MAX_VALUE
+    jmap.put("num", "10.25")
+    Evaluate.fromJsonAsNumber(jmap, json) shouldEqual 10.25
     jmap.put("num", null)
     Evaluate.fromJsonAsNumber(jmap, json) shouldEqual 0
   }
