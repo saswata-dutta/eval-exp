@@ -1,6 +1,7 @@
 package org.saswata.expressions
 
 import org.json4s.JsonAST.JObject
+import org.saswata.expressions.parser.JsonParser
 import org.scalatest.{FlatSpec, Matchers}
 
 class JsonParserSpec extends FlatSpec with Matchers {

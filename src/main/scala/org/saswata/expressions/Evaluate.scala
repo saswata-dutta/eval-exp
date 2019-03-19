@@ -1,6 +1,7 @@
 package org.saswata.expressions
 
 import org.saswata.expressions.Expression.Exp
+import org.saswata.expressions.parser.JsonParser
 
 object Evaluate {
   def fromJsonAsBool(env: Map[String, Any], json: String): Boolean = {
