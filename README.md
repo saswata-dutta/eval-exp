@@ -5,6 +5,7 @@
 [![CodeFactor](https://www.codefactor.io/repository/github/saswata-dutta/eval-exp/badge)](https://www.codefactor.io/repository/github/saswata-dutta/eval-exp)
 [![codecov](https://codecov.io/gh/saswata-dutta/eval-exp/branch/master/graph/badge.svg)](https://codecov.io/gh/saswata-dutta/eval-exp)
 [![Coverage Status](https://coveralls.io/repos/github/saswata-dutta/eval-exp/badge.svg?branch=develop)](https://coveralls.io/github/saswata-dutta/eval-exp?branch=develop)
+[![Dependencies](https://app.updateimpact.com/badge/1111677947179307008/eval-exp.svg?config=compile)](https://app.updateimpact.com/latest/1111677947179307008/eval-exp)
 
 AST and Json-Parser for simple expressions
 
