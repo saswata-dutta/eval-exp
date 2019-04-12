@@ -134,4 +134,17 @@ class JsonParserSpec extends FlatSpec with Matchers {
     thrown.getMessage shouldEqual "Incompatible SET atom type STR_SYMBOL"
   }
 
+  it should "handle negation of list contains" in {
+    val json = "{\"type\":\"NOT\",\"rhs\":{\"type\":\"STR_SET_CONTAINS\",\"lhs\":" +
+      "{\"type\":\"STR_SET_SYMBOL\",\"key\":\"supply_user_tag\"},\"rhs\":" +
+      "{\"type\":\"STR_SYMBOL\",\"key\":\"pas\"}}}"
+
+    val exp = JsonParser.parseBoolExp(json)
+
+    val result1: Boolean = new Expression(Map("supply_user_tag" -> Seq("a", "b", "c"), "pas" -> "c")).eval[Boolean](exp)
+    result1 shouldEqual false
+
+    val result2: Boolean = new Expression(Map("supply_user_tag" -> Seq("a", "b", "c"), "pas" -> "d")).eval[Boolean](exp)
+    result2 shouldEqual true
+  }
 }

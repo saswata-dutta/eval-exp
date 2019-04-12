@@ -21,7 +21,7 @@ object OperatorType extends Enumeration {
   val StrSetAtoms = Val(Seq("STR_SET_SYMBOL"))
   val StrSetBoolOps = Val(Seq("STR_SET_CONTAINS"))
 
-  val BinaryArithmeticOps = Val(Seq("ADD", "SUBTRACT", "MULTIPLY", "DIVIDE"))
+  val BinaryArithmeticOps = Val(Seq("ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "MIN", "MAX"))
 
   val If = Val(Seq("IF"))
 

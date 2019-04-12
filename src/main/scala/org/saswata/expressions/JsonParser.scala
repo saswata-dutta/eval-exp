@@ -175,6 +175,8 @@ object JsonParser {
       case "SUBTRACT" => SUBTRACT(parseNumExp(lhs), parseNumExp(rhs))
       case "MULTIPLY" => MULTIPLY(parseNumExp(lhs), parseNumExp(rhs))
       case "DIVIDE" => DIVIDE(parseNumExp(lhs), parseNumExp(rhs))
+      case "MIN" => MIN(parseNumExp(lhs), parseNumExp(rhs))
+      case "MAX" => MAX(parseNumExp(lhs), parseNumExp(rhs))
     }
   }
 
