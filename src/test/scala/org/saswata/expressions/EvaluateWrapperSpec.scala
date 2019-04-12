@@ -130,4 +130,22 @@ class EvaluateWrapperSpec extends FlatSpec with Matchers {
     jmap.put("tags", null)
     Evaluate.fromJsonAsBool(jmap, json) shouldEqual false
   }
+
+  it should "parse and evaluate min" in {
+    val json = "{\"type\":\"MIN\",\"lhs\":{\"type\":\"NUM_LITERAL\",\"value\":100}," +
+      "\"rhs\":{\"type\":\"NUM_SYMBOL\",\"key\":\"x\"}}"
+
+    Evaluate.fromJsonAsNumber(Map.empty[String, Any], json) shouldEqual 0.0
+    Evaluate.fromJsonAsNumber(Map("x" -> 10), json) shouldEqual 10.0
+    Evaluate.fromJsonAsNumber(Map("x" -> -1), json) shouldEqual -1.0
+  }
+
+  it should "parse and evaluate max" in {
+    val json = "{\"type\":\"MAX\",\"lhs\":{\"type\":\"NUM_SYMBOL\",\"key\":\"x\"}," +
+      "\"rhs\":{\"type\":\"NUM_LITERAL\",\"value\":100}}"
+
+    Evaluate.fromJsonAsNumber(Map.empty[String, Any], json) shouldEqual 100.0
+    Evaluate.fromJsonAsNumber(Map("x" -> 110), json) shouldEqual 110.0
+    Evaluate.fromJsonAsNumber(Map("x" -> -1), json) shouldEqual 100.0
+  }
 }

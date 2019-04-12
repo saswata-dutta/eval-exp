@@ -128,6 +128,14 @@ object Expression {
     override def eval(env: Map[String, Any]): Double = lhs.eval(env) / rhs.eval(env)
   }
 
+  case class MIN(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Double] {
+    override def eval(env: Map[String, Any]): Double = math.min(lhs.eval(env), rhs.eval(env))
+  }
+
+  case class MAX(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Double] {
+    override def eval(env: Map[String, Any]): Double = math.max(lhs.eval(env), rhs.eval(env))
+  }
+
   case class IF(cond: Exp[Boolean], lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Double] {
     override def eval(env: Map[String, Any]): Double = {
       if (cond.eval(env)) lhs.eval(env) else rhs.eval(env)
