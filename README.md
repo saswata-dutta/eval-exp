@@ -6,6 +6,7 @@
 [![codecov](https://codecov.io/gh/saswata-dutta/eval-exp/branch/master/graph/badge.svg)](https://codecov.io/gh/saswata-dutta/eval-exp)
 [![Coverage Status](https://coveralls.io/repos/github/saswata-dutta/eval-exp/badge.svg?branch=develop)](https://coveralls.io/github/saswata-dutta/eval-exp?branch=develop)
 [![Dependencies](https://app.updateimpact.com/badge/1111677947179307008/eval-exp.svg?config=compile)](https://app.updateimpact.com/latest/1111677947179307008/eval-exp)
+[![Known Vulnerabilities](https://snyk.io/test/github/saswata-dutta/eval-exp/badge.svg?targetFile=build.sbt)](https://snyk.io/test/github/saswata-dutta/eval-exp?targetFile=build.sbt)
 
 AST and Json-Parser for simple expressions
 

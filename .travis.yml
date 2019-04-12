@@ -5,6 +5,8 @@ scala:
 
 script:
   - sbt clean coverage test
+  - sbt scalastyle
+  - sbt test:scalastyle
 
 after_success:
   - sbt coverageReport
