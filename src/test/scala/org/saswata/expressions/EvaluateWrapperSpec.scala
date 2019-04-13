@@ -43,7 +43,7 @@ class EvaluateWrapperSpec extends FlatSpec with Matchers {
       """.stripMargin
 
     Evaluate.fromJsonAsBool(Map.empty[String, Any], json) shouldEqual false
-    Evaluate.fromJsonAsBool(Map("num" -> 1), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("num"  -> 1), json) shouldEqual false
     Evaluate.fromJsonAsBool(Map("flag" -> null), json) shouldEqual false
     Evaluate.fromJsonAsBool(Map("flag" -> false), json) shouldEqual false
     Evaluate.fromJsonAsBool(Map("flag" -> true), json) shouldEqual true
@@ -84,19 +84,19 @@ class EvaluateWrapperSpec extends FlatSpec with Matchers {
     Evaluate.fromJsonAsBool(Map("tag" -> 1L), json) shouldEqual false
     Evaluate.fromJsonAsBool(Map("tag" -> 1.25), json) shouldEqual false
 
-    Evaluate.fromJsonAsBool(Map("bla" -> Set(1, 2, 3)), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("bla"  -> Set(1, 2, 3)), json) shouldEqual false
     Evaluate.fromJsonAsBool(Map("tags" -> Set(1, 2, 3)), json) shouldEqual false
     Evaluate.fromJsonAsBool(Map("tags" -> Set("a", "b", "c")), json) shouldEqual false
     Evaluate.fromJsonAsBool(Map("tags" -> Seq("a", "b", "c")), json) shouldEqual false
 
-    Evaluate.fromJsonAsBool(Map("tags" -> Set.empty[String], "tag" -> "a"), json) shouldEqual false
-    Evaluate.fromJsonAsBool(Map("tags" -> Seq.empty[String], "tag" -> "a"), json) shouldEqual false
-    Evaluate.fromJsonAsBool(Map("tags" -> Set(1, 2, 3), "tag" -> "a"), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tags" -> Set.empty[String], "tag"  -> "a"), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tags" -> Seq.empty[String], "tag"  -> "a"), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tags" -> Set(1, 2, 3), "tag"       -> "a"), json) shouldEqual false
     Evaluate.fromJsonAsBool(Map("tags" -> Set("a", "b", "c"), "tag" -> 1), json) shouldEqual false
     Evaluate.fromJsonAsBool(Map("tags" -> Seq("a", "b", "c"), "tag" -> "x"), json) shouldEqual false
 
-    Evaluate.fromJsonAsBool(Map("tags" -> Set(1, 2, 3), "tag" -> 1), json) shouldEqual false
-    Evaluate.fromJsonAsBool(Map("tags" -> Seq(1, 2, 3), "tag" -> 1), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tags" -> Set(1, 2, 3), "tag"       -> 1), json) shouldEqual false
+    Evaluate.fromJsonAsBool(Map("tags" -> Seq(1, 2, 3), "tag"       -> 1), json) shouldEqual false
     Evaluate.fromJsonAsBool(Map("tags" -> Seq("a", "b", "c"), "tag" -> "c"), json) shouldEqual true
 
     val jmap: java.util.Map[java.lang.String, java.lang.Object] = new util.HashMap()
@@ -129,5 +129,23 @@ class EvaluateWrapperSpec extends FlatSpec with Matchers {
     Evaluate.fromJsonAsBool(jmap, json) shouldEqual false
     jmap.put("tags", null)
     Evaluate.fromJsonAsBool(jmap, json) shouldEqual false
+  }
+
+  it should "parse and evaluate min" in {
+    val json = "{\"type\":\"MIN\",\"lhs\":{\"type\":\"NUM_LITERAL\",\"value\":100}," +
+      "\"rhs\":{\"type\":\"NUM_SYMBOL\",\"key\":\"x\"}}"
+
+    Evaluate.fromJsonAsNumber(Map.empty[String, Any], json) shouldEqual 0.0
+    Evaluate.fromJsonAsNumber(Map("x" -> 10), json) shouldEqual 10.0
+    Evaluate.fromJsonAsNumber(Map("x" -> -1), json) shouldEqual -1.0
+  }
+
+  it should "parse and evaluate max" in {
+    val json = "{\"type\":\"MAX\",\"lhs\":{\"type\":\"NUM_SYMBOL\",\"key\":\"x\"}," +
+      "\"rhs\":{\"type\":\"NUM_LITERAL\",\"value\":100}}"
+
+    Evaluate.fromJsonAsNumber(Map.empty[String, Any], json) shouldEqual 100.0
+    Evaluate.fromJsonAsNumber(Map("x" -> 110), json) shouldEqual 110.0
+    Evaluate.fromJsonAsNumber(Map("x" -> -1), json) shouldEqual 100.0
   }
 }
