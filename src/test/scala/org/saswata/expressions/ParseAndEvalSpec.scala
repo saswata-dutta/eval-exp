@@ -60,7 +60,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     new Expression(Map("num" -> 1)).eval[Double](exp) shouldEqual 1.0
     new Expression(Map("num" -> 100L)).eval[Double](exp) shouldEqual 100.0
     new Expression(Map("num" -> 10.5)).eval[Double](exp) shouldEqual 10.5
-    new Expression(Map("num" -> 10.5F)).eval[Double](exp) shouldEqual 10.5
+    new Expression(Map("num" -> 10.5f)).eval[Double](exp) shouldEqual 10.5
     new Expression(Map("num" -> BigDecimal(100.5))).eval[Double](exp) shouldEqual 100.5
     new Expression(Map("num" -> BigInt(100))).eval[Double](exp) shouldEqual 100.0
   }
@@ -99,7 +99,7 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
 
     val exp = JsonParser.parseBoolExp(json)
     new Expression().eval[Boolean](exp) shouldEqual false
-    new Expression(Map("num" -> 1)).eval[Boolean](exp) shouldEqual false
+    new Expression(Map("num"  -> 1)).eval[Boolean](exp) shouldEqual false
     new Expression(Map("flag" -> false)).eval[Boolean](exp) shouldEqual false
     new Expression(Map("flag" -> true)).eval[Boolean](exp) shouldEqual true
   }
@@ -133,7 +133,6 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
         |    }
         |}
       """.stripMargin
-
 
     val exp = JsonParser.parseNumExp(json)
     val result: Double = new Expression().eval[Double](exp)
@@ -681,8 +680,10 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     val exp = JsonParser.parseBoolExp(json)
     new Expression().eval[Boolean](exp) shouldEqual false
     new Expression(Map("f1" -> true, "f2" -> true)).eval[Boolean](exp) shouldEqual false
-    new Expression(Map("f1" -> true, "f2" -> true, "f3" -> true)).eval[Boolean](exp) shouldEqual true
-    new Expression(Map("f1" -> true, "f2" -> true, "f3" -> false)).eval[Boolean](exp) shouldEqual false
+    new Expression(Map("f1" -> true, "f2" -> true, "f3" -> true))
+      .eval[Boolean](exp) shouldEqual true
+    new Expression(Map("f1" -> true, "f2" -> true, "f3" -> false))
+      .eval[Boolean](exp) shouldEqual false
   }
 
   it should "handle N-ary OR" in {
@@ -710,7 +711,9 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     val exp = JsonParser.parseBoolExp(json)
     new Expression().eval[Boolean](exp) shouldEqual false
     new Expression(Map("f1" -> true)).eval[Boolean](exp) shouldEqual true
-    new Expression(Map("f1" -> true, "f2" -> true, "f3" -> true)).eval[Boolean](exp) shouldEqual true
-    new Expression(Map("f1" -> false, "f2" -> false, "f3" -> false)).eval[Boolean](exp) shouldEqual false
+    new Expression(Map("f1" -> true, "f2" -> true, "f3" -> true))
+      .eval[Boolean](exp) shouldEqual true
+    new Expression(Map("f1" -> false, "f2" -> false, "f3" -> false))
+      .eval[Boolean](exp) shouldEqual false
   }
 }
