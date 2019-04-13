@@ -4,6 +4,7 @@ object OperatorName extends Enumeration {
 
   protected case class Val(operations: Seq[String]) extends super.Val
 
+  @SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
   implicit def valueToExpressionTypesVal(x: Value): Val = x.asInstanceOf[Val]
 
   val StrAtoms = Val(Seq("STR_SYMBOL", "STR_LITERAL"))

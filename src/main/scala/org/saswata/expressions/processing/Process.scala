@@ -33,6 +33,8 @@ object Process {
       case e: IF               => processor.process(e, env)
       case e: STR_SET_SYMBOL   => processor.process(e, env)
       case e: STR_SET_CONTAINS => processor.process(e, env)
+      case e: MIN              => processor.process(e, env)
+      case e: MAX              => processor.process(e, env)
     }
   // scalastyle:on cyclomatic.complexity
 }

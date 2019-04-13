@@ -54,4 +54,8 @@ trait Processor[R] {
   def process(exp: STR_SET_SYMBOL, env: Map[String, Any]): R
 
   def process(exp: STR_SET_CONTAINS, env: Map[String, Any]): R
+
+  def process(exp: MIN, env: Map[String, Any]): R
+
+  def process(exp: MAX, env: Map[String, Any]): R
 }

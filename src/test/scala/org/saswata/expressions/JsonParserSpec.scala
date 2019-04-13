@@ -20,7 +20,7 @@ class JsonParserSpec extends FlatSpec with Matchers {
       thrown.getMessage == "Unknown operator type NUMBER"
     }
 
-    assertParserThrows(JsonParser.parseOperatorType) shouldEqual true
+    assertParserThrows(JsonParser.parseOperator) shouldEqual true
     assertParserThrows(JsonParser.parseNumExp) shouldEqual true
     assertParserThrows(JsonParser.parseBoolExp) shouldEqual true
   }

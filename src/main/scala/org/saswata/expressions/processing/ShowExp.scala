@@ -5,6 +5,7 @@ import org.json4s.{JArray, JBool, JDouble, JObject, JString, JValue}
 import org.saswata.expressions.Expression._
 import org.saswata.expressions.ExpressionType._
 
+// scalastyle:off number.of.methods
 object ShowExp extends Processor[JObject] {
 
   def processExp[R](exp: Exp[R], env: Map[String, Any], evalValue: R => JValue): JObject =
@@ -139,4 +140,9 @@ object ShowExp extends Processor[JObject] {
 
   override def process(exp: NEGATE, env: Map[String, Any]): JObject =
     processUnaryOp(exp, env, asDouble)
+
+  override def process(exp: MIN, env: Map[String, Any]): JObject = ???
+
+  override def process(exp: MAX, env: Map[String, Any]): JObject = ???
 }
+// scalastyle:on number.of.methods

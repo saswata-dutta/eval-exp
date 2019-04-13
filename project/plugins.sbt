@@ -11,5 +11,6 @@ addSbtPlugin("org.scalameta" % "sbt-scalafmt" % "2.0.0")
 addSbtPlugin("com.sksamuel.scapegoat" %% "sbt-scapegoat" % "1.0.9")
 addSbtPlugin("com.artima.supersafe" % "sbtplugin" % "1.1.7")
 addSbtPlugin("org.wartremover" %% "sbt-wartremover" % "2.4.1")
+addSbtPlugin("org.wartremover" % "sbt-wartremover-contrib" % "1.3.1")
 
 addSbtPlugin("com.updateimpact" % "updateimpact-sbt-plugin" % "2.1.3")

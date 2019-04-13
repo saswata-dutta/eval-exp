@@ -103,6 +103,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     new Expression(Map("num"  -> 1)).eval[Boolean](exp) shouldEqual false
     new Expression(Map("flag" -> false)).eval[Boolean](exp) shouldEqual false
     new Expression(Map("flag" -> true)).eval[Boolean](exp) shouldEqual true
+    new Expression(Map("flag" -> "false")).eval[Boolean](exp) shouldEqual false
+    new Expression(Map("flag" -> "true")).eval[Boolean](exp) shouldEqual true
   }
 
   it should "handle bool symbols with string value" in {
