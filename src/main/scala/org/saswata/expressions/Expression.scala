@@ -11,10 +11,13 @@ object Expression {
 
   case class BOOL_SYMBOL(key: String) extends Exp[Boolean] {
     override def eval(env: Map[String, Any]): Boolean =
-      env.get(key).collect {
-        case b: Boolean => b
-        case s: String => s.toBoolean
-      }.getOrElse(false)
+      env
+        .get(key)
+        .collect {
+          case b: Boolean => b
+          case s: String  => s.toBoolean
+        }
+        .getOrElse(false)
   }
 
   case class STR_SYMBOL(key: String) extends Exp[String] {
@@ -26,10 +29,14 @@ object Expression {
   }
 
   case class NUM_SYMBOL(key: String) extends Exp[Double] {
-    override def eval(env: Map[String, Any]): Double = env.get(key).collect {
-      case n: java.lang.Number => n.doubleValue()
-      case s: String => s.toDouble
-    }.getOrElse(0.0)
+    override def eval(env: Map[String, Any]): Double =
+      env
+        .get(key)
+        .collect {
+          case n: java.lang.Number => n.doubleValue()
+          case s: String           => s.toDouble
+        }
+        .getOrElse(0.0)
   }
 
   case class NUM_LITERAL(value: Double) extends Exp[Double] {
@@ -44,9 +51,8 @@ object Expression {
     override def eval(env: Map[String, Any]): Boolean = lhs.eval(env) != rhs.eval(env)
   }
 
-  def fuzzyEquals(lhs: Double, rhs: Double): Boolean = {
+  def fuzzyEquals(lhs: Double, rhs: Double): Boolean =
     lhs.compare(rhs) == 0 || math.abs(lhs - rhs) < 0.001
-  }
 
   case class EQUALS(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
     override def eval(env: Map[String, Any]): Boolean = fuzzyEquals(lhs.eval(env), rhs.eval(env))
@@ -56,36 +62,55 @@ object Expression {
     override def eval(env: Map[String, Any]): Boolean = !fuzzyEquals(lhs.eval(env), rhs.eval(env))
   }
 
-  def numericCompare(env: Map[String, Any],
-                     lhs: Exp[Double], rhs: Exp[Double],
-                     comparator: (Double, Double) => Boolean): Boolean = {
+  def numericCompare(
+    env: Map[String, Any],
+    lhs: Exp[Double],
+    rhs: Exp[Double],
+    comparator: (Double, Double) => Boolean
+  ): Boolean = {
     val lhsAns = lhs.eval(env)
     val rhsAns = rhs.eval(env)
     comparator(lhsAns, rhsAns)
   }
 
   case class LESSER_THAN(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = {
-      numericCompare(env, lhs, rhs, (lhsAns, rhsAns) => !fuzzyEquals(lhsAns, rhsAns) && lhsAns < rhsAns)
-    }
+    override def eval(env: Map[String, Any]): Boolean =
+      numericCompare(
+        env,
+        lhs,
+        rhs,
+        (lhsAns, rhsAns) => !fuzzyEquals(lhsAns, rhsAns) && lhsAns < rhsAns
+      )
   }
 
   case class LESSER_THAN_EQ(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = {
-      numericCompare(env, lhs, rhs, (lhsAns, rhsAns) => fuzzyEquals(lhsAns, rhsAns) || lhsAns <= rhsAns)
-    }
+    override def eval(env: Map[String, Any]): Boolean =
+      numericCompare(
+        env,
+        lhs,
+        rhs,
+        (lhsAns, rhsAns) => fuzzyEquals(lhsAns, rhsAns) || lhsAns <= rhsAns
+      )
   }
 
   case class GREATER_THAN(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = {
-      numericCompare(env, lhs, rhs, (lhsAns, rhsAns) => !fuzzyEquals(lhsAns, rhsAns) && lhsAns > rhsAns)
-    }
+    override def eval(env: Map[String, Any]): Boolean =
+      numericCompare(
+        env,
+        lhs,
+        rhs,
+        (lhsAns, rhsAns) => !fuzzyEquals(lhsAns, rhsAns) && lhsAns > rhsAns
+      )
   }
 
   case class GREATER_THAN_EQ(lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Boolean] {
-    override def eval(env: Map[String, Any]): Boolean = {
-      numericCompare(env, lhs, rhs, (lhsAns, rhsAns) => fuzzyEquals(lhsAns, rhsAns) || lhsAns > rhsAns)
-    }
+    override def eval(env: Map[String, Any]): Boolean =
+      numericCompare(
+        env,
+        lhs,
+        rhs,
+        (lhsAns, rhsAns) => fuzzyEquals(lhsAns, rhsAns) || lhsAns > rhsAns
+      )
   }
 
   case class AND(lhs: Exp[Boolean], rhs: Exp[Boolean]) extends Exp[Boolean] {
@@ -137,17 +162,18 @@ object Expression {
   }
 
   case class IF(cond: Exp[Boolean], lhs: Exp[Double], rhs: Exp[Double]) extends Exp[Double] {
-    override def eval(env: Map[String, Any]): Double = {
+    override def eval(env: Map[String, Any]): Double =
       if (cond.eval(env)) lhs.eval(env) else rhs.eval(env)
-    }
   }
 
   case class STR_SET_SYMBOL(key: String) extends Exp[Set[String]] {
-    override def eval(env: Map[String, Any]): Set[String] = {
-      env.get(key).collect {
-        case set: Set[_] => collectStrings(set)
-      }.getOrElse(Set.empty[String])
-    }
+    override def eval(env: Map[String, Any]): Set[String] =
+      env
+        .get(key)
+        .collect {
+          case set: Set[_] => collectStrings(set)
+        }
+        .getOrElse(Set.empty[String])
   }
 
   case class STR_SET_CONTAINS(lhs: Exp[Set[String]], rhs: Exp[String]) extends Exp[Boolean] {

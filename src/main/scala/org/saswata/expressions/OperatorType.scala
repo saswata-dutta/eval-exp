@@ -11,8 +11,10 @@ object OperatorType extends Enumeration {
   val BoolAtoms = Val(Seq("BOOL_SYMBOL"))
 
   val StrRelationOps = Val(Seq("STR_EQUALS", "STR_NOT_EQUALS"))
-  val NumRelationOps = Val(Seq("EQUALS", "NOT_EQUALS",
-    "LESSER_THAN", "LESSER_THAN_EQ", "GREATER_THAN", "GREATER_THAN_EQ"))
+
+  val NumRelationOps = Val(
+    Seq("EQUALS", "NOT_EQUALS", "LESSER_THAN", "LESSER_THAN_EQ", "GREATER_THAN", "GREATER_THAN_EQ")
+  )
 
   val UnaryLogicOps = Val(Seq("NOT"))
   val BinaryLogicOps = Val(Seq("AND", "OR"))
@@ -25,7 +27,6 @@ object OperatorType extends Enumeration {
 
   val If = Val(Seq("IF"))
 
-  def typeOf(operation: String): Option[OperatorType.Value] = {
+  def typeOf(operation: String): Option[OperatorType.Value] =
     OperatorType.values.find(_.operations.contains(operation))
-  }
 }
