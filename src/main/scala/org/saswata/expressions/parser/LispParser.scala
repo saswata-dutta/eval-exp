@@ -1,5 +1,7 @@
 package org.saswata.expressions.parser
 
+import org.saswata.expressions.Expression.Exp
+
 object LispParser {
 
   def tokenise(str: String): Seq[String] =
@@ -39,21 +41,10 @@ object LispParser {
       case unknown     => throw new IllegalArgumentException(s"Illegal expression structure $unknown")
     }
   }
-//  def parseBoolExp(input: String): Exp[Boolean] = {
-  //    val groupedOperations = grouped(tokenise(input))
-  //
-  //    ???
-  //  }
-  //
-  //  def parseNumExp(input: String): Exp[Double] = {
-  //    val groupedOperations = grouped(tokenise(input))
-  //
-  //    ???
-  //  }
-  //
-  //  def parse(input: String): Exp[_] = {
-  //    val groupedOperations = grouped(tokenise(input))
-  //
-  //    ???
-  //  }
+
+  def parse(input: String): Exp[_] = {
+    val groupedOperations = grouped(tokenise(input))
+
+    ???
+  }
 }
