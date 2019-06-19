@@ -62,6 +62,6 @@ resolvers ++= Seq(Resolver.typesafeRepo("releases"),
 )
 
 libraryDependencies ++= List(
-  "org.json4s" %% "json4s-jackson" % "3.6.5",
+  "org.json4s" %% "json4s-jackson" % "3.6.6",
   "org.scalatest" %% "scalatest" % "3.0.7" % Test
 )
