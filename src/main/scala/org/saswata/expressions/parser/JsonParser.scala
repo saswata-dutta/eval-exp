@@ -1,7 +1,8 @@
-package org.saswata.expressions
+package org.saswata.expressions.parser
 
-import org.json4s._
+import org.json4s.JsonAST.JNumber
 import org.json4s.jackson.JsonMethods.parse
+import org.json4s.{JArray, JObject, JString, JValue}
 import org.saswata.expressions.Expression._
 
 object JsonParser {
@@ -16,25 +17,41 @@ object JsonParser {
   //    "rhs": {???}
   //  }
 
-  def parseJsonObj(jsonStr: String): JObject = parse(jsonStr).asInstanceOf[JObject]
+  def parseJsonObj(jsonStr: String): JObject = asJObject(parse(jsonStr))
 
-  def extractType(json: JObject): String = (json \ "type").asInstanceOf[JString].values
+  def extractType(json: JObject): String = asString(json \ "type")
 
   def extractValue(json: JObject): JValue = json \ "value"
 
-  def extractKey(json: JObject): String = (json \ "key").asInstanceOf[JString].values
+  def extractKey(json: JObject): String = asString(json \ "key")
 
-  def extractLhs(json: JObject): JObject = (json \ "lhs").asInstanceOf[JObject]
+  def extractLhs(json: JObject): JObject = asJObject(json \ "lhs")
 
-  def extractRhs(json: JObject): JObject = (json \ "rhs").asInstanceOf[JObject]
+  def extractRhs(json: JObject): JObject = asJObject(json \ "rhs")
 
-  def extractCond(json: JObject): JObject = (json \ "cond").asInstanceOf[JObject]
+  def extractCond(json: JObject): JObject = asJObject(json \ "cond")
 
-  def parseOperatorType(json: JObject): (String, OperatorType.Value) = {
+  val asString: PartialFunction[JValue, String] = { case jStr: JString => jStr.values }
+
+  val asJObject: PartialFunction[JValue, JObject] = { case obj: JObject => obj }
+
+  val asJArray: PartialFunction[JValue, JArray] = { case arr: JArray => arr }
+
+  def asNumbe(json: JValue): Double = json.values match { case n: Number => n.doubleValue() }
+
+  def asNumber: PartialFunction[JValue, Double] = {
+    case n: JNumber => n.values match { case n: Number => n.doubleValue() }
+  }
+
+  @SuppressWarnings(
+    Array("org.wartremover.warts.Throw", "org.wartremover.contrib.warts.ExposedTuples")
+  )
+  def parseOperator(json: JObject): (String, OperatorName.Value) = {
     val tag = extractType(json)
-    val operatorType = OperatorType
-      .typeOf(tag)
-      .getOrElse(throw new IllegalArgumentException(s"Unknown operator type $tag"))
+    val operatorType =
+      OperatorName
+        .typeOf(tag)
+        .getOrElse(throw new IllegalArgumentException(s"Unknown operator type $tag"))
 
     (tag, operatorType)
   }
@@ -42,17 +59,18 @@ object JsonParser {
   def parseBoolExp(jsonStr: String): Exp[Boolean] =
     parseBoolExp(parseJsonObj(jsonStr))
 
+  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
   def parseBoolExp(json: JObject): Exp[Boolean] = {
-    val (tag, operatorType) = parseOperatorType(json)
+    val (tag, operatorType) = parseOperator(json)
 
     operatorType match {
-      case OperatorType.BoolAtoms      => parseBoolAtom(json, tag)
-      case OperatorType.UnaryLogicOps  => parseUniBoolOperator(json, tag)
-      case OperatorType.BinaryLogicOps => parseBinBoolOperator(json, tag)
-      case OperatorType.NaryLogicOps   => parseNaryBoolOperator(json, tag)
-      case OperatorType.StrRelationOps => parseBinStrBoolOperator(json, tag)
-      case OperatorType.NumRelationOps => parseBinNumBoolOperator(json, tag)
-      case OperatorType.StrSetBoolOps  => parseStrSetBoolOperator(json, tag)
+      case OperatorName.BoolAtoms      => parseBoolAtom(json, tag)
+      case OperatorName.UnaryLogicOps  => parseUniBoolOperator(json, tag)
+      case OperatorName.BinaryLogicOps => parseBinBoolOperator(json, tag)
+      case OperatorName.NaryLogicOps   => parseNaryBoolOperator(json, tag)
+      case OperatorName.StrRelationOps => parseBinStrBoolOperator(json, tag)
+      case OperatorName.NumRelationOps => parseBinNumBoolOperator(json, tag)
+      case OperatorName.StrSetBoolOps  => parseStrSetBoolOperator(json, tag)
       case _                           => throw new IllegalArgumentException(s"Incompatible Boolean operator $tag")
     }
   }
@@ -68,7 +86,7 @@ object JsonParser {
     }
 
   def parseNaryBoolOperator(json: JObject, typeTag: String): Exp[Boolean] = {
-    val rhs = parseBoolExpArray((json \ "rhs").asInstanceOf[JArray])
+    val rhs = parseBoolExpArray(asJArray(json \ "rhs"))
     typeTag match {
       case "NARY_AND" => NARY_AND(rhs)
       case "NARY_OR"  => NARY_OR(rhs)
@@ -117,11 +135,12 @@ object JsonParser {
     }
   }
 
+  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
   def parseStrSetAtom(json: JObject): Exp[Set[String]] = {
-    val (tag, operatorType) = parseOperatorType(json)
+    val (tag, operatorType) = parseOperator(json)
 
     operatorType match {
-      case OperatorType.StrSetAtoms =>
+      case OperatorName.StrSetAtoms =>
         tag match {
           case "STR_SET_SYMBOL" => STR_SET_SYMBOL(extractKey(json))
         }
@@ -129,13 +148,14 @@ object JsonParser {
     }
   }
 
+  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
   def parseStrAtom(json: JObject): Exp[String] = {
-    val (tag, operatorType) = parseOperatorType(json)
+    val (tag, operatorType) = parseOperator(json)
 
     operatorType match {
-      case OperatorType.StrAtoms =>
+      case OperatorName.StrAtoms =>
         tag match {
-          case "STR_LITERAL" => STR_LITERAL(extractValue(json).asInstanceOf[JString].values)
+          case "STR_LITERAL" => STR_LITERAL(asString(extractValue(json)))
           case "STR_SYMBOL"  => STR_SYMBOL(extractKey(json))
         }
       case _ => throw new IllegalArgumentException(s"Incompatible String atom type $tag")
@@ -145,13 +165,15 @@ object JsonParser {
   def parseNumExp(jsonStr: String): Exp[Double] =
     parseNumExp(parseJsonObj(jsonStr))
 
+  @SuppressWarnings(Array("org.wartremover.warts.Throw"))
   def parseNumExp(json: JObject): Exp[Double] = {
-    val (tag, operatorType) = parseOperatorType(json)
+    val (tag, operatorType) = parseOperator(json)
 
     operatorType match {
-      case OperatorType.NumAtoms            => parseNumAtom(json, tag)
-      case OperatorType.BinaryArithmeticOps => parseBinNumOperator(json, tag)
-      case OperatorType.If                  => parseIfCondition(json)
+      case OperatorName.NumAtoms            => parseNumAtom(json, tag)
+      case OperatorName.UnaryArithmeticOps  => parseUnaryNumOperator(json, tag)
+      case OperatorName.BinaryArithmeticOps => parseBinNumOperator(json, tag)
+      case OperatorName.If                  => parseIfCondition(json)
       case _                                => throw new IllegalArgumentException(s"Incompatible Numeric operator $tag")
     }
   }
@@ -159,10 +181,17 @@ object JsonParser {
   def parseNumAtom(json: JObject, typeTag: String): Exp[Double] =
     typeTag match {
       case "NUM_LITERAL" =>
-        val value: Double = extractValue(json).values.asInstanceOf[Number].doubleValue()
+        val value: Double = asNumber(extractValue(json))
         NUM_LITERAL(value)
       case "NUM_SYMBOL" => NUM_SYMBOL(extractKey(json))
     }
+
+  def parseUnaryNumOperator(json: JObject, typeTag: String): Exp[Double] = {
+    val rhs = extractRhs(json)
+    typeTag match {
+      case "NEGATE" => NEGATE(parseNumExp(rhs))
+    }
+  }
 
   def parseBinNumOperator(json: JObject, typeTag: String): Exp[Double] = {
     val lhs = extractLhs(json)

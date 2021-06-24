@@ -1,9 +1,10 @@
-package org.saswata.expressions
+package org.saswata.expressions.parser
 
-object OperatorType extends Enumeration {
+object OperatorName extends Enumeration {
 
   protected case class Val(operations: Seq[String]) extends super.Val
 
+  @SuppressWarnings(Array("org.wartremover.warts.AsInstanceOf"))
   implicit def valueToExpressionTypesVal(x: Value): Val = x.asInstanceOf[Val]
 
   val StrAtoms = Val(Seq("STR_SYMBOL", "STR_LITERAL"))
@@ -23,10 +24,11 @@ object OperatorType extends Enumeration {
   val StrSetAtoms = Val(Seq("STR_SET_SYMBOL"))
   val StrSetBoolOps = Val(Seq("STR_SET_CONTAINS"))
 
+  val UnaryArithmeticOps = Val(Seq("NEGATE"))
   val BinaryArithmeticOps = Val(Seq("ADD", "SUBTRACT", "MULTIPLY", "DIVIDE", "MIN", "MAX"))
 
   val If = Val(Seq("IF"))
 
-  def typeOf(operation: String): Option[OperatorType.Value] =
-    OperatorType.values.find(_.operations.contains(operation))
+  def typeOf(operation: String): Option[OperatorName.Value] =
+    OperatorName.values.find(_.operations.contains(operation))
 }

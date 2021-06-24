@@ -1,6 +1,7 @@
 package org.saswata.expressions
 
 import org.json4s.JsonAST.JObject
+import org.saswata.expressions.parser.JsonParser
 import org.scalatest.{FlatSpec, Matchers}
 
 class JsonParserSpec extends FlatSpec with Matchers {
@@ -19,7 +20,7 @@ class JsonParserSpec extends FlatSpec with Matchers {
       thrown.getMessage == "Unknown operator type NUMBER"
     }
 
-    assertParserThrows(JsonParser.parseOperatorType) shouldEqual true
+    assertParserThrows(JsonParser.parseOperator) shouldEqual true
     assertParserThrows(JsonParser.parseNumExp) shouldEqual true
     assertParserThrows(JsonParser.parseBoolExp) shouldEqual true
   }

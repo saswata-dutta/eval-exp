@@ -1,5 +1,6 @@
 package org.saswata.expressions
 
+import org.saswata.expressions.parser.JsonParser
 import org.scalatest._
 
 class ParseAndEvalSpec extends FlatSpec with Matchers {
@@ -102,6 +103,8 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     new Expression(Map("num"  -> 1)).eval[Boolean](exp) shouldEqual false
     new Expression(Map("flag" -> false)).eval[Boolean](exp) shouldEqual false
     new Expression(Map("flag" -> true)).eval[Boolean](exp) shouldEqual true
+    new Expression(Map("flag" -> "false")).eval[Boolean](exp) shouldEqual false
+    new Expression(Map("flag" -> "true")).eval[Boolean](exp) shouldEqual true
   }
 
   it should "handle bool symbols with string value" in {
@@ -116,6 +119,23 @@ class ParseAndEvalSpec extends FlatSpec with Matchers {
     val exp = JsonParser.parseBoolExp(json)
     new Expression(Map("flag" -> "false")).eval[Boolean](exp) shouldEqual false
     new Expression(Map("flag" -> "true")).eval[Boolean](exp) shouldEqual true
+  }
+
+  it should "handle numeric negate" in {
+    val json =
+      """
+        |{
+        |    "type": "NEGATE",
+        |    "rhs": {
+        |        "type": "NUM_LITERAL",
+        |        "value": 1
+        |    }
+        |}
+      """.stripMargin
+
+    val exp = JsonParser.parseNumExp(json)
+    val result: Double = new Expression().eval[Double](exp)
+    result shouldEqual -1
   }
 
   it should "handle numeric add" in {

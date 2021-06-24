@@ -4,10 +4,12 @@ scala:
   - 2.12.8
 
 script:
+  - sbt evicted
   - sbt clean coverage test
   - sbt scalastyle
   - sbt test:scalastyle
   - sbt scapegoat
+  - sbt scalafmtCheckAll
 
 after_success:
   - sbt coverageReport
